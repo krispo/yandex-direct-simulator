@@ -8,6 +8,11 @@ import java.util.Date
 import play.api.libs.json._
 import play.api.libs.functional.syntax._
 
+/*----------- Response structure -------------*/
+
+object Response {
+  def apply(data: JsValue): JsValue = Json.toJson(Json.obj(("data" -> data)))
+}
 /*----------- METHODS ------------*/
 
 /* respond data for method GetCampaignsList */

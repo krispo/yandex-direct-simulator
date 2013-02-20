@@ -1,38 +1,59 @@
 package controllers
 
+import models._
+import json_api.Convert._
+
 import play.api._
 import play.api.mvc._
+
+import play.api.libs.json._
 
 object Yandex extends Controller {
 
   def api = Action(parse.json) { implicit request =>
     val method = (request.body \ "method").as[String]
-    
+
     method match {
-      case "PingAPI" => {
-       Ok 
-      }
+      case "PingAPI" => Ok(Response(JsNumber(1))) as JSON
+
       case "GetCampaignsList" => {
         Ok
       }
+
       case "GetBanners" => {
-        Ok
+        fromJson[GetBannersInfo](request.body \ "param") map { s =>
+          Ok
+        } getOrElse BadRequest
       }
+
       case "GetSummaryStat" => {
-        Ok
+        fromJson[GetSummaryStatRequest](request.body \ "param") map { s =>
+          Ok
+        } getOrElse BadRequest
       }
+
       case "CreateNewReport" => {
-        Ok
+        fromJson[NewReportInfo](request.body \ "param") map { s =>
+          Ok
+        } getOrElse BadRequest
       }
+
       case "GetReportList" => {
         Ok
       }
+
       case "DeleteReport" => {
-        Ok
+        (request.body \ "param").asOpt[Int] map { s =>
+          Ok
+        } getOrElse BadRequest
       }
+
       case "UpdatePrices" => {
-        Ok
+        fromJson[PhrasePriceInfo](request.body \ "param") map { s =>
+          Ok
+        } getOrElse BadRequest
       }
+
     }
   }
 }
