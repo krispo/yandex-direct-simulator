@@ -13,7 +13,7 @@ trait Dao {
   /**
    * Shallow copies of Campaigns. Fast DB retrieval
    */
-  def getCampaign(userName: String,  campaignId: String,
+  def getCampaign(userName: String,  campaignId: Long,
     historyStartDate: DateTime = new DateTime, historyEndDate: DateTime = new DateTime): Option[Campaign]
 
   /**
