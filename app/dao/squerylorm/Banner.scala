@@ -12,8 +12,6 @@ case class Banner(val text: String) extends domain.Banner with KeyedEntity[Long]
   // Banner -* BannerPhrase relation
   lazy val bannerPhrasesRel: OneToMany[BannerPhrase] = AppSchema.bannerBannerPhrases.left(this)
 
-  lazy val bannerPhrases: List[BannerPhrase] = inTransaction { bannerPhrasesRel.toList }
-
   /**
    * default put - save to db
    */

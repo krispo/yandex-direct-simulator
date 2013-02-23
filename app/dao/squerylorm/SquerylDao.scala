@@ -10,8 +10,12 @@ import domain.{ Campaign => dCam, Performance => dPerf }
 @BeanInfo
 class SquerylDao extends dao.Dao {
 
+  val iso_fmt = format.ISODateTimeFormat.dateTime()
+  val sdate = iso_fmt.parseDateTime("1000-01-01T12:00:00.000+04:00")
+  val edate = iso_fmt.parseDateTime("3000-01-01T12:00:00.000+04:00")
+
   def getCampaign(userName: String, campaignId: Long,
-    historyStartDate: DateTime = new DateTime, historyEndDate: DateTime = new DateTime) =
+    historyStartDate: DateTime = sdate, historyEndDate: DateTime = edate) =
     Campaign.select(userName: String, campaignId: Long).headOption map {
       campaign =>
         {
@@ -20,8 +24,6 @@ class SquerylDao extends dao.Dao {
           campaign
         }
     }
-
-  def getCampaign(id: Long) = Campaign.get_by_id(id)
 
   def getCampaigns(userName: String) =
     Campaign.select(userName: String)

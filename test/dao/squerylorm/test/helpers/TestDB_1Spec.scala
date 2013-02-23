@@ -35,8 +35,22 @@ class TestDB_1Spec extends Specification with AllExpectations {
           cperf.length must_== (60)
           cperf.head.cost_search must_== (2)
           cperf.head.impress_search must_== (10)
-          cperf.head.clicks_search must_== (1)          
+          cperf.head.clicks_search must_== (1)
 
+          val netAdvBid = AppSchema.netadvisedbidhistory.toList
+          netAdvBid.length must_== (6000)
+          netAdvBid.head.a must_== (0)
+          netAdvBid.head.b must_== (1)
+          netAdvBid.head.c must_== (3)
+          netAdvBid.head.d must_== (4)
+
+          val ab = AppSchema.actualbidhistory.toList
+          ab.length must_== (6000)
+          ab.head.bid must_== (3)
+
+          val c = AppSchema.campaigns.toList.head
+          c.banners.length must_== (5)
+          c.banners.head.text must_== ("Banner_0")          
         }
       }
     }

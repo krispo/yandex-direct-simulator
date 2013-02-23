@@ -24,7 +24,7 @@ object TestDB_1 extends AppHelpers {
     val user = User("krisp0", "123").put
 
     //create campaigns
-    val campaigns = 1 to 5 map (i => user.campaignsRel.assign(Campaign(user.id)).put) toList
+    val campaigns = 1 to 5 map (i => user.campaignsRel.assign(Campaign(user.id, _login = "login_1", _token = "token_1")).put) toList
 
     // create Banners to campaigns(0)
     val banners = 0 until 5 map (i => Banner("Banner_" + i.toString).put) toList
@@ -36,29 +36,47 @@ object TestDB_1 extends AppHelpers {
     val region = Region(description = "Russia").put
 
     //BannerPhrase
-    val bannerPhrases = List(
+    val bannerPhrases =
       for (i <- 0 until 5; j <- 0 until 20)
         yield BannerPhrase(campaigns.head.id,
         banner_id = banners(i).id,
         phrase_id = phrases((i * 20) + j).id,
-        region_id = region.id).put)
+        region_id = region.id).put
 
     //CampaignPerformance
-    def createCampaignPerformance(ts: Timestamp, i:Int): CampaignPerformance = {
+    def createCampaignPerformance(ts: Timestamp, i: Int): CampaignPerformance = {
       CampaignPerformance(
         campaign_id = campaigns.head.id,
         //periodtype_id = periodTypes(0).id,
-        cost_search = 2*i,
-        cost_context = 2*i,
-        impress_search = 10*i,
-        impress_context = 10*i,
+        cost_search = 2 * i,
+        cost_context = 2 * i,
+        impress_search = 10 * i,
+        impress_context = 10 * i,
         clicks_search = i,
         clicks_context = i,
         date = ts)
     }
     val campaignPerformances = 0 until 60 map
-      (i => createCampaignPerformance(plusMinutes(i),i+1).put)
-    
-    
+      (i => createCampaignPerformance(plusMinutes(i), i + 1).put)
+
+    //NetAdvisedBidHistory
+    val netAdvisedBidHistory = for (i <- 0 until 60; bp <- bannerPhrases)
+      yield NetAdvisedBidHistory(
+      bannerphrase_id = bp.id, //fk
+      date = plusMinutes(i),
+      a = i,
+      b = i + 1,
+      c = i + 3,
+      d = i + 4,
+      e = 0,
+      f = 0).put
+
+    //ActualBidHistory
+    val actualBidHistory = for (i <- 0 until 60; bp <- bannerPhrases)
+      yield ActualBidHistory(
+      bp.id,
+      plusMinutes(i),
+      bid = i + 3).put
+
   }
 }

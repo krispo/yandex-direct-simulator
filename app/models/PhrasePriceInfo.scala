@@ -27,13 +27,13 @@ object UpdatePrice {
     val cs = dao.getCampaigns(login)
     ppil map { ppi =>
       {
-        cs.find(_.id == ppi.CampaignID) map {
-          _.banners.find(_.id == ppi.BannerID) map {
-            _.bannerPhrases.find(_.phrase.get.id == ppi.PhraseID) map { bp =>
-              dao.updatePrices(bp.id, ppi.Price)
+        cs.find(_.id == ppi.CampaignID) map { c =>
+          c.bannerPhrases.filter(bp => (bp.banner.get.id == ppi.BannerID) & (bp.phrase.get.id == ppi.PhraseID)) match {
+            case Nil => false
+            case bp =>
+              dao.updatePrices(bp.head.id, ppi.Price)
               true
-            } getOrElse false
-          } getOrElse false
+          }
         } getOrElse false
       }
     } find (!_) isDefined
