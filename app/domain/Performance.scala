@@ -2,10 +2,9 @@ package domain
 
 import org.joda.time._
 
-
-trait Performance
-{
+trait Performance {
   def id: Long
+
   def cost_search: Double
   def cost_context: Double
   def impress_search: Int
@@ -13,5 +12,5 @@ trait Performance
   def clicks_search: Int
   def clicks_context: Int
 
-  def dateTime: DateTime   // DateTime of Performance snap-shot
+  def dateTime: DateTime // DateTime of Performance snap-shot
 }

@@ -38,7 +38,7 @@ object Yandex extends Controller {
 
       case "GetSummaryStat" => {
         fromJson[GetSummaryStatRequest](request.body \ "param") map { s =>
-          Ok(Response(toJson[StatItem](StatItem.get(login, token))))
+          Ok(Response(toJson[List[StatItem]](StatItem.get(login, token, s))))
         } getOrElse BadRequest
       }
 

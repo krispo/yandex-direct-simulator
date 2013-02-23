@@ -65,6 +65,15 @@ case class Campaign(
 
   lazy val performanceHistory = getHistory[CampaignPerformance](performancesRel)
 
+  lazy val performance = CampaignPerformance(
+    campaign_id = id,
+    cost_search = performanceHistory.map(_.cost_search).sum,
+    cost_context = performanceHistory.map(_.cost_context).sum,
+    impress_search = performanceHistory.map(_.impress_search).sum,
+    impress_context = performanceHistory.map(_.impress_context).sum,
+    clicks_search = performanceHistory.map(_.clicks_search).sum,
+    clicks_context = performanceHistory.map(_.clicks_context).sum)
+
   /**
    * default put - save to db
    */

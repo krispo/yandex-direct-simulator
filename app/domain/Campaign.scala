@@ -21,7 +21,7 @@ trait Campaign {
 
   def banners: List[Banner]
   @transient lazy val bannerJList: JList[Banner] = banners
-  
+
   // start and end Dates of retrieved Campaign Histories
   //@BeanProperty
   def historyStartDate: DateTime
@@ -30,6 +30,8 @@ trait Campaign {
 
   def performanceHistory: List[Performance]
   @transient lazy val performanceHistoryJList: JList[Performance] = performanceHistory
+
+  def performance: Performance
 
   def budgetHistory: List[BudgetHistoryElem]
   @transient lazy val budgetHistoryJList: JList[BudgetHistoryElem] = budgetHistory
