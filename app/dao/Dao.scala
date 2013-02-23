@@ -13,14 +13,13 @@ trait Dao {
   /**
    * Shallow copies of Campaigns. Fast DB retrieval
    */
-  def getCampaign(userName: String,  campaignId: Long,
+  def getCampaign(userName: String, campaignId: Long,
     historyStartDate: DateTime = new DateTime, historyEndDate: DateTime = new DateTime): Option[Campaign]
 
   /**
    * Shallow copies of Campaigns for given user. Fast DB retrieval
    */
   def getCampaigns(userName: String): List[Campaign]
-
 
   /**
    * creates CampaignPerformance in DB
@@ -46,7 +45,6 @@ trait Dao {
    * creates new BannerPhrase in case it's not present in DB.
    * @throw java.util.RunTimeException
    */
-  def createBannerPhraseNetAndActualBidReport(campaign: Campaign,
-    report: Map[BannerPhrase, (ActualBidHistoryElem, NetAdvisedBids)]): Boolean
+  def updatePrices(bp_id: Long, bid: Double)
 
 }

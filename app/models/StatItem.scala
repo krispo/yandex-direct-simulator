@@ -31,6 +31,5 @@ object StatItem {
     gssr.CampaignIDS map { dao.getCampaign(login, _, gssr.startDate, gssr.endDate) get } map { c =>
       StatItem._apply(c.performance)
     }
-
   }
 }

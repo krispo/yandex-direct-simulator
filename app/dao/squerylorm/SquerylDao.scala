@@ -42,14 +42,10 @@ class SquerylDao extends dao.Dao {
     Campaign.get_by_id(campaign.id).createBannerPhrasesPerformanceReport(report)
 
   /**
-   * creates BannerPhrase NetAdvisedBids and ActualBidHistory records in DB
-   * creates new BannerPhrase in case it's not present in DB.
-   * TODO: Optimize of course
-   * @throw java.util.RunTimeException
+   * UpdatePrices
    */
-  def createBannerPhraseNetAndActualBidReport(campaign: domain.Campaign,
-    report: Map[domain.BannerPhrase, (domain.ActualBidHistoryElem, domain.NetAdvisedBids)]): Boolean =
-    Campaign.get_by_id(campaign.id).createActualBidAndNetAdvisedBids(report)
+  def updatePrices(bp_id: Long, bid: Double) =
+    ActualBidHistory(bannerphrase_id = bp_id, bid = bid).put()
 
   /**
    * retrieves full domain model (Campaign and its Histories) for given Dates from DB

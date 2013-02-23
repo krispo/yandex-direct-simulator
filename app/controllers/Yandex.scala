@@ -60,8 +60,8 @@ object Yandex extends Controller {
       }
 
       case "UpdatePrices" => {
-        fromJson[PhrasePriceInfo](request.body \ "param") map { s =>
-          if (s.update) Ok else BadRequest
+        fromJson[List[PhrasePriceInfo]](request.body \ "param") map { s =>
+          if (!UpdatePrice.update(login, token, s)) Ok else BadRequest
         } getOrElse BadRequest
       }
 
