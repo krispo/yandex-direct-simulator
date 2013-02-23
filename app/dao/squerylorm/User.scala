@@ -9,7 +9,10 @@ case class User(
   val name: String = "",
   val password: String = "") extends domain.User with KeyedEntity[Long] {
   val id: Long = 0
-  
+
+  @transient
+  lazy val campaignsRel = AppSchema.userCampaign.left(this)
+
   /**
    * default put - save to db
    */
@@ -26,7 +29,7 @@ object User {
     AppSchema.users.where(
       a => (a.name === name) and (a.password === password)).headOption
   }
- 
+
   def create(user: domain.User): User = inTransaction {
     User(user.name, user.password).put
   }

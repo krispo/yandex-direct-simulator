@@ -13,6 +13,7 @@ import org.squeryl.ForeignKeyDeclaration
 @BeanInfo
 case class Campaign(
   var user_id: Long = 0, //fk
+  val name: String = "",
   val start: Timestamp = new Timestamp(1),
   val _login: String = "",
   val _token: String = "") extends domain.Campaign with KeyedEntity[Long] {

@@ -1,4 +1,4 @@
-package dao.squerylorm.test.helper
+package dao.squerylorm.test.helpers
 
 import org.squeryl._
 import org.squeryl.PrimitiveTypeMode._

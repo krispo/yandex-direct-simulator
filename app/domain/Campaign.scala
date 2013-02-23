@@ -8,6 +8,7 @@ import java.util.{ Map => JMap, List => JList }
 @BeanInfo
 trait Campaign {
   def id: Long
+  def name: String
   def startDate: DateTime
   def endDate: Option[DateTime]
   def budget: Option[Double]
