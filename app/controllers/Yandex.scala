@@ -23,20 +23,20 @@ object Yandex extends Controller {
     val token = (request.body \ "token").as[String]
     val method = (request.body \ "method").as[String]
 
-    method match {
+    method match {//+
       case "PingAPI" => Ok(Response(JsNumber(1))) as JSON
 
-      case "GetCampaignsList" => {
+      case "GetCampaignsList" => {//+
         Ok(Response(toJson[List[ShortCampaignInfo]](ShortCampaignInfo.get(login, token))))
       }
 
-      case "GetBanners" => {
+      case "GetBanners" => {//+
         fromJson[GetBannersInfo](request.body \ "param") map { s =>
           Ok(Response(toJson[List[BannerInfo]](BannerInfo.get(login, token, s))))
         } getOrElse BadRequest
       }
 
-      case "GetSummaryStat" => {
+      case "GetSummaryStat" => {//+
         fromJson[GetSummaryStatRequest](request.body \ "param") map { s =>
           Ok(Response(toJson[List[StatItem]](StatItem.get(login, token, s))))
         } getOrElse BadRequest
@@ -59,7 +59,7 @@ object Yandex extends Controller {
         } getOrElse BadRequest
       }
 
-      case "UpdatePrices" => {
+      case "UpdatePrices" => {//+
         fromJson[List[PhrasePriceInfo]](request.body \ "param") map { s =>
           if (!UpdatePrice.update(login, token, s)) Ok else BadRequest
         } getOrElse BadRequest
