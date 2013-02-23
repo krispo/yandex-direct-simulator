@@ -61,6 +61,8 @@ case class Campaign(
       x => { x.campaign = Some(this); x })
   }
 
+  lazy val banners: List[domain.Banner] = bannerPhrases map { _.banner.get } distinct // List(1,1,2,3,3) => List(1,2,3)
+
   lazy val performanceHistory = getHistory[CampaignPerformance](performancesRel)
 
   /**

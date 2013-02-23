@@ -9,7 +9,11 @@ case class PhrasePriceInfo(
   val Price: Double = 0.0,
   val AutoBroker: Option[String] = Some("Yes"),
   val AutoBudgetPriority: Option[String] = Some("Medium"),
-  val ContextPrice: Option[Double] = Some(0.0))
-
+  val ContextPrice: Option[Double] = Some(0.0)) {
+  def update: Boolean = {
+    //update in DB
+    true
+  }
+}
 /* output */
 // {"data" : 1} if successful 

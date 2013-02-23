@@ -10,3 +10,8 @@ case class StatItem(
   val ShowsContext: Int = 0,
   val ClicksSearch: Int = 0,
   val ClicksContext: Int = 0)
+
+object StatItem { 
+  //retrieve from DB
+  def get(login: String, token: String): StatItem = StatItem()
+}

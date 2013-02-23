@@ -6,11 +6,13 @@ import org.squeryl.dsl._
 import scala.reflect._
 
 @BeanInfo
-case class Banner() extends domain.Banner with KeyedEntity[Long] {
+case class Banner(val text: String) extends domain.Banner with KeyedEntity[Long] {
   val id: Long = 0
 
   // Banner -* BannerPhrase relation
   lazy val bannerPhrasesRel: OneToMany[BannerPhrase] = AppSchema.bannerBannerPhrases.left(this)
+
+  lazy val bannerPhrases: List[BannerPhrase] = inTransaction { bannerPhrasesRel.toList }
 
   /**
    * default put - save to db

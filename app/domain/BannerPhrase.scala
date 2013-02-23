@@ -11,6 +11,7 @@ trait BannerPhrase{
   def banner: Option[Banner]
   def phrase: Option[Phrase]
   def region: Option[Region]
+  
   def actualBidHistory: List[ActualBidHistoryElem]
   lazy val actualBidHistoryJList: JList[ActualBidHistoryElem] = actualBidHistory
   def netAdvisedBidsHistory: List[NetAdvisedBids]

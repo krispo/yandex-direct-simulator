@@ -11,46 +11,57 @@ import play.api.libs.json._
 object Yandex extends Controller {
 
   def api = Action(parse.json) { implicit request =>
+    /* input structure:
+        "login",
+        "token",
+        "application_id",
+        "locale",
+        "method",
+        "param"
+    */
+    val login = (request.body \ "login").as[String]
+    val token = (request.body \ "token").as[String]
     val method = (request.body \ "method").as[String]
 
     method match {
       case "PingAPI" => Ok(Response(JsNumber(1))) as JSON
 
       case "GetCampaignsList" => {
-        Ok
+        Ok(Response(toJson[List[ShortCampaignInfo]](ShortCampaignInfo.get(login, token))))
       }
 
       case "GetBanners" => {
         fromJson[GetBannersInfo](request.body \ "param") map { s =>
-          Ok
+          Ok(Response(toJson[List[BannerInfo]](BannerInfo.get(login, token, s))))
         } getOrElse BadRequest
       }
 
       case "GetSummaryStat" => {
         fromJson[GetSummaryStatRequest](request.body \ "param") map { s =>
-          Ok
+          Ok(Response(toJson[StatItem](StatItem.get(login, token))))
         } getOrElse BadRequest
       }
 
       case "CreateNewReport" => {
         fromJson[NewReportInfo](request.body \ "param") map { s =>
-          Ok
+          Ok(Response(JsNumber(s.generate)))
         } getOrElse BadRequest
       }
 
       case "GetReportList" => {
-        Ok
+        Ok(Response(toJson[ReportInfo](ReportInfo.get(login, token))))
       }
 
       case "DeleteReport" => {
         (request.body \ "param").asOpt[Int] map { s =>
+          //TODO
           Ok
         } getOrElse BadRequest
       }
 
       case "UpdatePrices" => {
         fromJson[PhrasePriceInfo](request.body \ "param") map { s =>
-          Ok
+          if (s.update) Ok else BadRequest
         } getOrElse BadRequest
       }
 

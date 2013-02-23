@@ -2,14 +2,17 @@ package models
 
 import org.joda.time._
 
+import dao.squerylorm.SquerylDao
+
 /* respond data for method GetCampaignsList */
 case class ShortCampaignInfo(
-  val CampaignID: Int = 0,
-  val Login: String = "",
+  val CampaignID: Long,
+  val Login: String,
   val Name: String = "",
-  val StartDate: DateTime = new DateTime,
+  val StartDate: DateTime,
+  val Rest: Double,
+  ///////////////////////////////////////// not used yet
   val Sum: Double = 0.0,
-  val Rest: Double = 0.0,
   val Shows: Int = 0,
   val Clicks: Int = 0,
   val SumAvailableForTransfer: Option[Double] = Some(0.0),
@@ -21,3 +24,19 @@ case class ShortCampaignInfo(
   val IsActive: Option[String] = None,
   val ManagerName: Option[String] = None,
   val AgencyName: Option[String] = None)
+
+object ShortCampaignInfo {
+  //retrieve from DB
+  def get(login: String, token: String): List[ShortCampaignInfo] = {
+    val dao = new SquerylDao
+    val campaigns = dao.getCampaigns(login)
+    campaigns map { c =>
+      ShortCampaignInfo(
+        CampaignID = c.id,
+        Login = login,
+        Name = "",
+        StartDate = c.startDate,
+        Rest = c.budget.getOrElse(0.0))
+    }
+  }
+}  

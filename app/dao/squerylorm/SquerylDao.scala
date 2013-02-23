@@ -5,12 +5,12 @@ import org.squeryl.PrimitiveTypeMode._
 import org.squeryl.dsl._
 import org.joda.time._
 import scala.reflect._
-import domain.{ Campaign => dCam, Performance => dPerf}
+import domain.{ Campaign => dCam, Performance => dPerf }
 
 @BeanInfo
 class SquerylDao extends dao.Dao {
 
-  override def getCampaign(userName: String, campaignId: Long,
+  def getCampaign(userName: String, campaignId: Long,
     historyStartDate: DateTime = new DateTime, historyEndDate: DateTime = new DateTime) =
     Campaign.select(userName: String, campaignId: Long).headOption map {
       campaign =>
@@ -21,7 +21,9 @@ class SquerylDao extends dao.Dao {
         }
     }
 
-  override def getCampaigns(userName: String) =
+  def getCampaign(id: Long) = Campaign.get_by_id(id)
+
+  def getCampaigns(userName: String) =
     Campaign.select(userName: String)
 
   /**
@@ -81,7 +83,6 @@ class SquerylDao extends dao.Dao {
    */
   def getUser(name: String): Option[domain.User] = User.select(name)
   def getUser(name: String, password: String): Option[domain.User] = User.select(name, password)
-
 
   def clearDB: Boolean = {
     import scala.util.control.Exception._
