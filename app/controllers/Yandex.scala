@@ -59,7 +59,7 @@ object Yandex extends Controller {
         } getOrElse BadRequest
       }
 
-      case "UpdatePrices" => {//+
+      case "UpdatePrices" => {//++
         fromJson[List[PhrasePriceInfo]](request.body \ "param") map { s =>
           if (!UpdatePrice.update(login, token, s)) Ok else BadRequest
         } getOrElse BadRequest
