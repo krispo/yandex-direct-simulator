@@ -33,7 +33,7 @@ trait AppHelpers {
       inTransaction {
         allCatch opt AppSchema.drop
         allCatch opt AppSchema.create
-        fill_DB
+        //fill_DB
       }
       block
     }
