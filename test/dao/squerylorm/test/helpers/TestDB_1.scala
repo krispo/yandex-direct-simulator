@@ -34,8 +34,14 @@ object TestDB_1 extends AppHelpers {
 
     //create campaigns
     val campaigns = 0 until 5 map (i =>
-      user.campaignsRel.assign(
-        Campaign(user.id, name = "Campaign_" + i.toString, _login = "login_1", _token = "token_1")).put) toList
+      user.campaignsRel.associate(
+        Campaign(user.id, name = "Campaign_" + i.toString, _login = "krisp0", _token = "token_1"))) toList
+
+    //BudgetHistory
+    val budgetHistory = 0 until 60 map { i =>
+      campaigns(0).budgetHistoryRel.associate(
+        BudgetHistory(campaign_id = 1, date = plusMinutes(i), budget = 100 - i))
+    } toList
 
     // create Banners to campaigns(0)
     val banners = 0 until 5 map (i => Banner("Banner_" + i.toString).put) toList

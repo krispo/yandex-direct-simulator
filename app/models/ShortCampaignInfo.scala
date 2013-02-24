@@ -34,7 +34,7 @@ object ShortCampaignInfo {
       ShortCampaignInfo(
         CampaignID = c.id,
         Login = login,
-        Name = "",
+        Name = c.name,
         StartDate = c.startDate,
         Rest = c.budget.getOrElse(0.0))
     }

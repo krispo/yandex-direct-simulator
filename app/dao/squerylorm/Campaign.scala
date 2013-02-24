@@ -21,9 +21,9 @@ case class Campaign(
   def startDate = start
 
   @Transient
-  var historyStartDate: DateTime = new DateTime
+  var historyStartDate: DateTime = sdate //new DateTime
   @Transient
-  var historyEndDate: DateTime = new DateTime
+  var historyEndDate: DateTime = edate //new DateTime
 
   def endDate = Some(historyEndDate)
   /*
