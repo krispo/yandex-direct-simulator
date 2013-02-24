@@ -41,10 +41,10 @@ case class Campaign(
   lazy val budgetHistoryRel: OneToMany[BudgetHistory] = AppSchema.campaignBudgetHistory.left(this)
 
   // Campaign History in ascending order and in conformance to campaign.historyStartDate, historyEndDate
-  def getHistory[T <: History](qRel: Query[T]): List[T] = if (historyStartDate != historyEndDate) inTransaction {
+  def getHistory[T <: History](qRel: Query[T]): List[T] = if (!historyStartDate.isAfter(historyEndDate)) inTransaction {
     from(qRel)((b) =>
       where(b.date >= convertToJdbc(historyStartDate)
-        and b.date <= convertToJdbc(historyEndDate))
+        and b.date <= convertToJdbc(historyEndDate.plusDays(1).minusMillis(1)))
         select (b) orderBy (b.date asc)).toList
   }
   else Nil

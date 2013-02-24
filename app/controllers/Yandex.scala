@@ -26,11 +26,11 @@ object Yandex extends Controller {
     method match {//+
       case "PingAPI" => Ok(Response(JsNumber(1))) as JSON
 
-      case "GetCampaignsList" => {//+
+      case "GetCampaignsList" => {//++
         Ok(Response(toJson[List[ShortCampaignInfo]](ShortCampaignInfo.get(login, token))))
       }
 
-      case "GetBanners" => {//+
+      case "GetBanners" => {//++
         fromJson[GetBannersInfo](request.body \ "param") map { s =>
           Ok(Response(toJson[List[BannerInfo]](BannerInfo.get(login, token, s))))
         } getOrElse BadRequest

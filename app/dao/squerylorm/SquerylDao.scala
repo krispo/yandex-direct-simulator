@@ -8,9 +8,7 @@ import scala.reflect._
 import domain.{ Campaign => dCam, Performance => dPerf }
 
 @BeanInfo
-class SquerylDao extends dao.Dao {
-
-  
+class SquerylDao extends dao.Dao {  
 
   def getCampaign(userName: String, campaignId: Long,
     historyStartDate: DateTime = sdate, historyEndDate: DateTime = edate) =

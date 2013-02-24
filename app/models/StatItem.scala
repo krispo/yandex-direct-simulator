@@ -6,7 +6,8 @@ import dao.squerylorm.SquerylDao
 /* method GetSummaryStat -----  for postStats ----------------------------------------------*/
 /* output List[T] */
 case class StatItem(
-  // other parameters are not useful yet  
+  // other parameters are not useful yet 
+  val CampaignID: Long = 0,
   val SumSearch: Double = 0.0,
   val SumContext: Double = 0.0,
   val ShowsSearch: Int = 0,
@@ -16,8 +17,10 @@ case class StatItem(
 
 object StatItem {
 
-  def _apply(p: domain.Performance): StatItem = {
+  def _apply(c: dao.squerylorm.Campaign): StatItem = {
+    val p = c.performance
     StatItem(
+      CampaignID = c.id,
       SumSearch = p.cost_search,
       SumContext = p.cost_context,
       ShowsSearch = p.impress_search,
@@ -29,7 +32,7 @@ object StatItem {
   def get(login: String, token: String, gssr: GetSummaryStatRequest): List[StatItem] = {
     val dao = new SquerylDao
     gssr.CampaignIDS map { dao.getCampaign(login, _, gssr.startDate, gssr.endDate) get } map { c =>
-      StatItem._apply(c.performance)
+      StatItem._apply(c)
     }
   }
 }

@@ -70,4 +70,25 @@ class methodsSpec extends Specification with AllExpectations {
       }
     }
   }
+
+  /*------------- GetSummaryStat ---------------------------------------------------*/
+  "StatItem" should {
+    sequential
+
+    "take TRUE data" in {
+
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val res = StatItem.get("krisp0", "token_1", GetSummaryStatRequest(List(1, 2, 3, 4, 5), "2013-01-01", "2013-01-01"))
+          res.length must_== (5)
+          res.head.CampaignID must_== (1)
+          res.head.SumSearch must_== (3660)
+          res.head.ShowsSearch must_== (18300)
+          res.head.ClicksSearch must_== (1830)
+
+          res.last.CampaignID must_== (5)
+        }
+      }
+    }
+  }
 }
