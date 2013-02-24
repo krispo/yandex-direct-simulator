@@ -36,7 +36,7 @@ object Yandex extends Controller {
         } getOrElse BadRequest
       }
 
-      case "GetSummaryStat" => {//+
+      case "GetSummaryStat" => {//++
         fromJson[GetSummaryStatRequest](request.body \ "param") map { s =>
           Ok(Response(toJson[List[StatItem]](StatItem.get(login, token, s))))
         } getOrElse BadRequest

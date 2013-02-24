@@ -27,10 +27,10 @@ case class BannerPhrase(
   // BannerPhrase History in ascending order and in conformance to campaign.historyStartDate, historyEndDate
   def getBannerPhraseHistory[T <: History](qRel: Query[T]): List[T] = campaign match {
     case None => Nil
-    case Some(campaign) if (campaign.historyStartDate != campaign.historyEndDate) => inTransaction {
+    case Some(campaign) if (!campaign.historyStartDate.isAfter(campaign.historyEndDate)) => inTransaction {
       from(qRel)((b) =>
         where(b.date >= convertToJdbc(campaign.historyStartDate)
-          and b.date <= convertToJdbc(campaign.historyEndDate))
+          and b.date <= convertToJdbc(campaign.historyEndDate.plusDays(1).minusMillis(1)))
           select (b) orderBy (b.date asc)).toList
     }
     case _ => Nil
@@ -38,6 +38,7 @@ case class BannerPhrase(
 
   //get History using Campaign.historyStartDate and historyEndDate
   lazy val actualBidHistory = getBannerPhraseHistory[ActualBidHistory](bannerPhraseActualBidHistoryRel)
+  //lazy val price = actualBidHistory.head
 
   lazy val netAdvisedBidsHistory = getBannerPhraseHistory[NetAdvisedBidHistory](bannerPhraseNetAdvisedBidsHistoryRel)
   /*
@@ -82,6 +83,7 @@ object BannerPhrase {
     banner_id = bp.banner.get.id,
     phrase_id = bp.phrase.get.id,
     region_id = bp.region.get.id)
+
   /**
    * select BannerPhrase for given Campaign, banner_id, phrase_id and region_id
    * it should be 1 BannerPhrase
@@ -89,12 +91,16 @@ object BannerPhrase {
    * @return BannerPhrase
    */
   def select(campaign: Campaign, banner_id: Long, phrase_id: Long,
-    region_id: Long): List[BannerPhrase] = inTransaction {
-    from(AppSchema.bannerphrases, AppSchema.banners, AppSchema.phrases, AppSchema.regions)((bp, b, ph, r) =>
+    region_id: Long): Option[BannerPhrase] = inTransaction {
+    val bpOpt = from(AppSchema.bannerphrases)(bp =>
       where(
         bp.campaign_id === campaign.id and
-          bp.banner_id === b.id and
-          bp.phrase_id === ph.id and
-          bp.region_id === r.id) select (bp)).toList
+          bp.banner_id === banner_id and
+          bp.phrase_id === phrase_id and
+          bp.region_id === region_id) select (bp)).headOption
+    bpOpt map { bp =>
+      bp.campaign = Some(campaign)
+      Some(bp)
+    } getOrElse None
   }
 }

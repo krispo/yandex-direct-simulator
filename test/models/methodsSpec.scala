@@ -1,6 +1,7 @@
 package models
 
 import models._
+import dao.squerylorm._
 
 import json_api.Convert._
 import org.specs2.mutable._
@@ -87,6 +88,37 @@ class methodsSpec extends Specification with AllExpectations {
           res.head.ClicksSearch must_== (1830)
 
           res.last.CampaignID must_== (5)
+        }
+      }
+    }
+  }
+
+  /*------------- UpdatePrices ---------------------------------------------------*/
+  "PhrasePriceInfo" should {
+    sequential
+
+    "take TRUE data" in {
+
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val res = UpdatePrice.update("krisp0", "token_1", List(
+            PhrasePriceInfo(PhraseID = 1, BannerID = 1, CampaignID = 1, Price = 1.11),
+            PhrasePriceInfo(PhraseID = 2, BannerID = 1, CampaignID = 1, Price = 2.11),
+            PhrasePriceInfo(PhraseID = 3, BannerID = 1, CampaignID = 1, Price = 3.11),
+            PhrasePriceInfo(PhraseID = 21, BannerID = 2, CampaignID = 1, Price = 21.21),
+            PhrasePriceInfo(PhraseID = 22, BannerID = 2, CampaignID = 1, Price = 22.21),
+            PhrasePriceInfo(PhraseID = 23, BannerID = 2, CampaignID = 1, Price = 23.21)))
+          res must_== (false)
+
+          val c = AppSchema.campaigns.toList.head
+          BannerPhrase.select(campaign = c, banner_id = 1, phrase_id = 1, region_id = 1).get.actualBidHistory.head.bid must_== (1.11)
+          BannerPhrase.select(campaign = c, banner_id = 1, phrase_id = 2, region_id = 1).get.actualBidHistory.head.bid must_== (2.11)
+          BannerPhrase.select(campaign = c, banner_id = 1, phrase_id = 3, region_id = 1).get.actualBidHistory.head.bid must_== (3.11)
+          BannerPhrase.select(campaign = c, banner_id = 2, phrase_id = 21, region_id = 1).get.actualBidHistory.head.bid must_== (21.21)
+          BannerPhrase.select(campaign = c, banner_id = 2, phrase_id = 22, region_id = 1).get.actualBidHistory.head.bid must_== (22.21)
+          BannerPhrase.select(campaign = c, banner_id = 2, phrase_id = 23, region_id = 1).get.actualBidHistory.head.bid must_== (23.21)
+
+          BannerPhrase.select(campaign = c, banner_id = 4, phrase_id = 75, region_id = 1).get.actualBidHistory.head.bid must_== (3)
         }
       }
     }
