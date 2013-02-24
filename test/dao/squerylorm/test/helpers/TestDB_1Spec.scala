@@ -23,7 +23,11 @@ class TestDB_1Spec extends Specification with AllExpectations {
         inTransaction {
 
           AppSchema.users.toList.length must_== (1)
-          AppSchema.campaigns.toList.length must_== (5)
+          val c = AppSchema.campaigns.toList
+          c.length must_== (5)
+          c.head.name must_== ("Campaign_0")
+          c.head.banners.length must_== (5)
+          c.head.banners.head.text must_== ("Banner_0")
 
           AppSchema.banners.toList.length must_== (5)
           AppSchema.phrases.toList.length must_== (100)
@@ -48,9 +52,6 @@ class TestDB_1Spec extends Specification with AllExpectations {
           ab.length must_== (6000)
           ab.head.bid must_== (3)
 
-          val c = AppSchema.campaigns.toList.head
-          c.banners.length must_== (5)
-          c.banners.head.text must_== ("Banner_0")          
         }
       }
     }

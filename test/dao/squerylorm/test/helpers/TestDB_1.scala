@@ -10,6 +10,15 @@ import scala.reflect._
 import dao.squerylorm._
 
 object TestDB_1 extends AppHelpers {
+  /*
+   * 1 user
+   * 5 campaigns
+   * 5 banners
+   * 100 phrases
+   * 1 region
+   * 100 bannerphrases
+   * 60 timestamps
+   */
 
   def fill_DB() = {
     val midnnight_formatter = time.format.DateTimeFormat.forPattern("yyyy-MM-dd")
@@ -24,7 +33,9 @@ object TestDB_1 extends AppHelpers {
     val user = User("krisp0", "123").put
 
     //create campaigns
-    val campaigns = 1 to 5 map (i => user.campaignsRel.assign(Campaign(user.id, _login = "login_1", _token = "token_1")).put) toList
+    val campaigns = 0 until 5 map (i =>
+      user.campaignsRel.assign(
+        Campaign(user.id, name = "Campaign_" + i.toString, _login = "login_1", _token = "token_1")).put) toList
 
     // create Banners to campaigns(0)
     val banners = 0 until 5 map (i => Banner("Banner_" + i.toString).put) toList

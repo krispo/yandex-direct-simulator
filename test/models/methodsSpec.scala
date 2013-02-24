@@ -26,7 +26,22 @@ class methodsSpec extends Specification with AllExpectations {
         inTransaction {
           val bil = BannerInfo.get("krisp0", "token_1", GetBannersInfo(List(1)))
           bil.length must_== (5)
+          bil.head.BannerID must_== (1)
+          bil.head.Text must_== ("Banner_0")
+          bil.head.Phrases.length must_== (20)
+          bil.head.Phrases.head.BannerID must_== (1)
+          bil.head.Phrases.head.CampaignID must_== (1)
+          bil.head.Phrases.head.Phrase must_== ("Phrase_0")
+          bil.head.Phrases.head.Min must_== (0)
+          bil.head.Phrases.head.Max must_== (1)
+          bil.head.Phrases.head.PremiumMin must_== (3)
+          bil.head.Phrases.head.PremiumMax must_== (4)
+          bil.head.Phrases.head.Price must_== (3)
           
+          bil.last.BannerID must_== (5)
+          bil.last.Text must_== ("Banner_4")
+          bil.last.Phrases.length must_== (20)
+
           //AppSchema.bannerphrases.toList.length must_== (100)          
         }
       }
