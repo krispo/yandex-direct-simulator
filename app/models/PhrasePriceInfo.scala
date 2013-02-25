@@ -15,21 +15,3 @@ case class PhrasePriceInfo(
 
 /* output */
 // {"data" : 1} if successful
-
-object UpdatePrice {
-  def update(login: String, token: String, ppil: List[PhrasePriceInfo]): Boolean = {
-    val dao = new SquerylDao
-    val cs = dao.getCampaigns(login)
-    ppil map { ppi => 
-      {
-        cs.find(_.id == ppi.CampaignID) map { c =>
-          BannerPhrase.select(c, ppi.BannerID, ppi.PhraseID, 1) map
-            { bp =>
-              dao.updatePrices(bp.id, ppi.Price)
-              true
-            } getOrElse false
-        } getOrElse false
-      }
-    } find (!_) isDefined
-  }
-}

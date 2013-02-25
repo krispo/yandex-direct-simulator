@@ -28,11 +28,4 @@ object StatItem {
       ClicksSearch = p.clicks_search,
       ClicksContext = p.clicks_context)
   }
-  //retrieve from DB
-  def get(login: String, token: String, gssr: GetSummaryStatRequest): List[StatItem] = {
-    val dao = new SquerylDao
-    gssr.CampaignIDS map { dao.getCampaign(login, _, gssr.startDate, gssr.endDate) get } map { c =>
-      StatItem._apply(c)
-    }
-  }
 }

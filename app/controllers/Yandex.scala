@@ -22,49 +22,59 @@ object Yandex extends Controller {
     val login = (request.body \ "login").as[String]
     val token = (request.body \ "token").as[String]
     val method = (request.body \ "method").as[String]
+    val param = request.body \ "param"
 
-    method match {//+
-      case "PingAPI" => Ok(Response(JsNumber(1))) as JSON
+    val api = new API(login)
 
-      case "GetCampaignsList" => {//++
-        Ok(Response(toJson[List[ShortCampaignInfo]](ShortCampaignInfo.get(login, token))))
+    method match { //+
+      case "PingAPI" => Ok(wrap(JsNumber(1))) as JSON
+
+      case "GetCampaignsList" => { //++ 
+        Ok(wrap(toJson[List[ShortCampaignInfo]](api.getCampaignsList))) as JSON
       }
 
-      case "GetBanners" => {//++
-        fromJson[GetBannersInfo](request.body \ "param") map { s =>
-          Ok(Response(toJson[List[BannerInfo]](BannerInfo.get(login, token, s))))
+      case "GetBanners" => { //++
+        fromJson[GetBannersInfo](param) map { s =>
+          Ok(wrap(toJson[List[BannerInfo]](api.getBanners(s)))) as JSON
         } getOrElse BadRequest
       }
 
-      case "GetSummaryStat" => {//++
-        fromJson[GetSummaryStatRequest](request.body \ "param") map { s =>
-          Ok(Response(toJson[List[StatItem]](StatItem.get(login, token, s))))
+      case "GetSummaryStat" => { //++
+        fromJson[GetSummaryStatRequest](param) map { s =>
+          Ok(wrap(toJson[List[StatItem]](api.getSummaryStat(s)))) as JSON
         } getOrElse BadRequest
       }
 
       case "CreateNewReport" => {
-        fromJson[NewReportInfo](request.body \ "param") map { s =>
-          Ok(Response(JsNumber(s.generate)))
+        fromJson[NewReportInfo](param) map { s =>
+          Ok(wrap(JsNumber(api.createNewReport(s)))) as JSON
         } getOrElse BadRequest
       }
 
       case "GetReportList" => {
-        Ok(Response(toJson[ReportInfo](ReportInfo.get(login, token))))
+        Ok(wrap(toJson[ReportInfo](api.getReportList))) as JSON
       }
 
       case "DeleteReport" => {
-        (request.body \ "param").asOpt[Int] map { s =>
-          //TODO
-          Ok
+        param.asOpt[Int] map { s =>
+          if (api.deleteReport(s))
+            Ok(wrap(JsNumber(1))) as JSON
+          else
+            BadRequest
         } getOrElse BadRequest
       }
 
-      case "UpdatePrices" => {//++
-        fromJson[List[PhrasePriceInfo]](request.body \ "param") map { s =>
-          if (!UpdatePrice.update(login, token, s)) Ok else BadRequest
+      case "UpdatePrices" => { //++
+        fromJson[List[PhrasePriceInfo]](param) map { s =>
+          if (!api.updatePrices(s))
+            Ok(wrap(JsNumber(1))) as JSON
+          else
+            BadRequest
         } getOrElse BadRequest
       }
 
     }
   }
+
+  def wrap(data: JsValue): JsValue = Json.toJson(Json.obj(("data" -> data)))
 }

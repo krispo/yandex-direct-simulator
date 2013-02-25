@@ -13,7 +13,7 @@ import java.text._
 import dao.squerylorm.test.helpers.TestDB_1
 import org.squeryl.PrimitiveTypeMode._
 
-class methodsSpec extends Specification with AllExpectations {
+class APISpec extends Specification with AllExpectations {
   /* Date format */
   val date_fmt = new SimpleDateFormat("yyyy-MM-dd")
 
@@ -25,7 +25,7 @@ class methodsSpec extends Specification with AllExpectations {
 
       TestDB_1.creating_and_filling_inMemoryDB() {
         inTransaction {
-          val res = ShortCampaignInfo.get("krisp0", "token_1")
+          val res = API("krisp0", "token_1").getCampaignsList
           res.length must_== (5)
           res.head.CampaignID must_== (1)
           res.head.Login must_== ("krisp0")
@@ -50,7 +50,7 @@ class methodsSpec extends Specification with AllExpectations {
 
       TestDB_1.creating_and_filling_inMemoryDB() {
         inTransaction {
-          val res = BannerInfo.get("krisp0", "token_1", GetBannersInfo(List(1)))
+          val res = API("krisp0", "token_1").getBanners(GetBannersInfo(List(1)))
           res.length must_== (5)
           res.head.BannerID must_== (1)
           res.head.Text must_== ("Banner_0")
@@ -80,7 +80,7 @@ class methodsSpec extends Specification with AllExpectations {
 
       TestDB_1.creating_and_filling_inMemoryDB() {
         inTransaction {
-          val res = StatItem.get("krisp0", "token_1", GetSummaryStatRequest(List(1, 2, 3, 4, 5), "2013-01-01", "2013-01-01"))
+          val res = API("krisp0", "token_1").getSummaryStat(GetSummaryStatRequest(List(1, 2, 3, 4, 5), "2013-01-01", "2013-01-01"))
           res.length must_== (5)
           res.head.CampaignID must_== (1)
           res.head.SumSearch must_== (3660)
@@ -101,7 +101,7 @@ class methodsSpec extends Specification with AllExpectations {
 
       TestDB_1.creating_and_filling_inMemoryDB() {
         inTransaction {
-          val res = UpdatePrice.update("krisp0", "token_1", List(
+          val res = API("krisp0", "token_1").updatePrices(List(
             PhrasePriceInfo(PhraseID = 1, BannerID = 1, CampaignID = 1, Price = 1.11),
             PhrasePriceInfo(PhraseID = 2, BannerID = 1, CampaignID = 1, Price = 2.11),
             PhrasePriceInfo(PhraseID = 3, BannerID = 1, CampaignID = 1, Price = 3.11),

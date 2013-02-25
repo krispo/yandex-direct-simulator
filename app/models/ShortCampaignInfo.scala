@@ -24,19 +24,3 @@ case class ShortCampaignInfo(
   val IsActive: Option[String] = None,
   val ManagerName: Option[String] = None,
   val AgencyName: Option[String] = None)
-
-object ShortCampaignInfo {
-  //retrieve from DB
-  def get(login: String, token: String): List[ShortCampaignInfo] = {
-    val dao = new SquerylDao
-    val campaigns = dao.getCampaigns(login)
-    campaigns map { c =>
-      ShortCampaignInfo(
-        CampaignID = c.id,
-        Login = login,
-        Name = c.name,
-        StartDate = c.startDate,
-        Rest = c.budget.getOrElse(0.0))
-    }
-  }
-}  
