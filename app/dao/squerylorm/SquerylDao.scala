@@ -8,7 +8,9 @@ import scala.reflect._
 import domain.{ Campaign => dCam, Performance => dPerf }
 
 @BeanInfo
-class SquerylDao extends dao.Dao {  
+class SquerylDao extends dao.Dao {
+
+  def getXmlReport(userName: String, reportId: Long) = <message>Hello world!</message>
 
   def getCampaign(userName: String, campaignId: Long,
     historyStartDate: DateTime = sdate, historyEndDate: DateTime = edate) =
@@ -77,6 +79,11 @@ class SquerylDao extends dao.Dao {
    */
   def getUser(name: String): Option[domain.User] = User.select(name)
   def getUser(name: String, password: String): Option[domain.User] = User.select(name, password)
+
+  /**
+   * XmlReport
+   */
+  def createXmlReport(report: domain.Report) = true
 
   def clearDB: Boolean = {
     import scala.util.control.Exception._

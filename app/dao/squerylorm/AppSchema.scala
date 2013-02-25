@@ -40,9 +40,15 @@ object AppSchema extends Schema {
 
   //User *-* Network relation
   val campaigns = table[Campaign]
+  
+  //User *-* Network relation
+  val reports = table[Report]
 
   // User -* Campaign relation
   val userCampaign = oneToManyRelation(users, campaigns).via((u, c) => u.id === c.user_id)
+  
+  // User -* Campaign relation
+  val userReport = oneToManyRelation(users, reports).via((u, r) => u.id === r.user_id)
 
   // Campaign -* CampaignPerformance relation
   val campaignPerformance = oneToManyRelation(campaigns, campaignperformance).via((c, b) => c.id === b.campaign_id)

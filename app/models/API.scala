@@ -24,7 +24,6 @@ case class API(
         Rest = c.budget.getOrElse(0.0))
     }
   }
-  
 
   def getBanners(gbi: GetBannersInfo): List[BannerInfo] =
     for {
@@ -50,23 +49,21 @@ case class API(
             Price = actualBid.elem)
         } toList)
     }
-    
 
   def getSummaryStat(gssr: GetSummaryStatRequest): List[StatItem] =
     gssr.CampaignIDS map { dao.getCampaign(login, _, gssr.startDate, gssr.endDate) get } map { c =>
       StatItem._apply(c)
     }
 
-    
-  def createNewReport(par: NewReportInfo): Int = 0
+  def createNewReport(par: NewReportInfo): Int = {
 
-  
+    0
+  }
+
   def getReportList: ReportInfo = ReportInfo(0, None, "")
 
-  
   def deleteReport(par: Int): Boolean = true
 
-  
   def updatePrices(ppil: List[PhrasePriceInfo]): Boolean = {
     val cs = dao.getCampaigns(login)
     ppil map { ppi =>

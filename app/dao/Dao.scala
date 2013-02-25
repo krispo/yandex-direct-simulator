@@ -22,6 +22,11 @@ trait Dao {
   def getCampaigns(userName: String): List[Campaign]
 
   /**
+   * get XmlReport from DB
+   */
+  def getXmlReport(userName: String, reportId: Long): scala.xml.Node
+
+  /**
    * creates CampaignPerformance in DB
    */
   def createCampaignPerformanceReport(campaign: Campaign, performance: Performance): Performance
@@ -45,6 +50,7 @@ trait Dao {
    * creates new BannerPhrase in case it's not present in DB.
    * @throw java.util.RunTimeException
    */
+
   def updatePrices(bp_id: Long, bid: Double)
 
 }

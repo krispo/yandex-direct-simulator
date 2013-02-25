@@ -10,19 +10,30 @@ import dao.Dao
 
 class TestDB_1Spec extends Specification with AllExpectations {
 
-  "fill_DB" should {
+  //work with postgreSQL DB
+  "fill postgreSQL DB" should {
     sequential
 
-    //work with postgreSQL DB
-    TestDB_1.creating_and_filling_DB()()
+    "just drop and recreate schema and fill DB" in {
+      TestDB_1.creating_and_filling_DB()()
+      1 must_== (1)
+    }
+  }
 
-    //work with in memory DB
-    "put User" in {
+  //work with in memory DB
+  "fill_memory DB" should {
+    sequential
+
+    "fill DB" in {
 
       TestDB_1.creating_and_filling_inMemoryDB() {
         inTransaction {
 
-          AppSchema.users.toList.length must_== (1)
+          val u = AppSchema.users.toList
+          u.length must_== (1)
+          u.head.reports.length must_== (2)
+          u.head.reports.head.user must_== (Some(u.head))
+          u.head.reports.head.content must be equalTo ("<a>Hello</a>")
 
           val c = AppSchema.campaigns.toList
           c.length must_== (5)

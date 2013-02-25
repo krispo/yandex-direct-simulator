@@ -8,6 +8,7 @@ import org.joda.time
 import java.sql.Timestamp
 import scala.reflect._
 import dao.squerylorm._
+import scala.xml._
 
 object TestDB_1 extends AppHelpers {
   /*
@@ -36,6 +37,8 @@ object TestDB_1 extends AppHelpers {
     val campaigns = 0 until 5 map (i =>
       user.campaignsRel.associate(
         Campaign(user.id, name = "Campaign_" + i.toString, _login = "krisp0", _token = "token_1"))) toList
+
+    val reports = 0 until 2 map (_ => user.reportsRel.associate(Report(user.id, (<a>Hello</a>).toString))) toList
 
     //BudgetHistory
     val budgetHistory = 0 until 60 map { i =>

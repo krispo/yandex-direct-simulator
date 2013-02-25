@@ -38,7 +38,7 @@ case class BannerPhrase(
 
   //get History using Campaign.historyStartDate and historyEndDate
   lazy val actualBidHistory = getBannerPhraseHistory[ActualBidHistory](bannerPhraseActualBidHistoryRel)
-  //lazy val price = actualBidHistory.head
+  //lazy val price = actualBidHistory.head.bid
 
   lazy val netAdvisedBidsHistory = getBannerPhraseHistory[NetAdvisedBidHistory](bannerPhraseNetAdvisedBidsHistoryRel)
   /*

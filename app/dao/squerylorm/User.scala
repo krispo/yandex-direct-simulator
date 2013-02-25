@@ -13,6 +13,15 @@ case class User(
   @transient
   lazy val campaignsRel = AppSchema.userCampaign.left(this)
 
+  @transient
+  lazy val reportsRel = AppSchema.userReport.left(this)
+
+  lazy val reports: List[domain.Report] = inTransaction {
+    reportsRel.toList map {
+      x => { x.user = Some(this); x }
+    }
+  }
+
   /**
    * default put - save to db
    */
