@@ -24,7 +24,7 @@ trait Dao {
   /**
    * get XmlReport from DB
    */
-  def getXmlReport(userName: String, reportId: Long): scala.xml.Node
+  //def getXmlReport(reportId: Long): Report
 
   /**
    * creates CampaignPerformance in DB

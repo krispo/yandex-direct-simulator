@@ -25,9 +25,9 @@ case class API(
     }
   }
 
-  def getBanners(gbi: GetBannersInfo): List[BannerInfo] =
+  def getBanners(par: GetBannersInfo): List[BannerInfo] =
     for {
-      c <- gbi.CampaignIDS map (dao.getCampaign(login, _).get);
+      c <- par.CampaignIDS map (dao.getCampaign(login, _).get);
       b <- c.banners
     } yield {
       BannerInfo(
@@ -50,23 +50,40 @@ case class API(
         } toList)
     }
 
-  def getSummaryStat(gssr: GetSummaryStatRequest): List[StatItem] =
-    gssr.CampaignIDS map { dao.getCampaign(login, _, gssr.startDate, gssr.endDate) get } map { c =>
+  def getSummaryStat(par: GetSummaryStatRequest): List[StatItem] =
+    par.CampaignIDS map { dao.getCampaign(login, _, par.startDate, par.endDate) get } map { c =>
       StatItem._apply(c)
     }
 
-  def createNewReport(par: NewReportInfo): Int = {
+  def createNewReport(par: NewReportInfo): Long = {
+    import scala.xml._
+    val content = <a>qwe</a>
 
-    0
+    dao.getUser(login) map { u =>
+      val rep = dao.createXmlReport(u, content.toString)
+      rep.id
+    } getOrElse 0
   }
 
-  def getReportList: ReportInfo = ReportInfo(0, None, "")
+  def getReportList: List[ReportInfo] = {
+    val conf = play.api.Play.current.configuration
 
-  def deleteReport(par: Int): Boolean = true
+    dao.getUser(login) map { u =>
+      u.reports map { r =>
+        ReportInfo(r.id, Some(conf.getString("uri").get + "/report/" + r.id.toString()), "Done")
+      }
+    } getOrElse List()
 
-  def updatePrices(ppil: List[PhrasePriceInfo]): Boolean = {
+  }
+
+  def deleteReport(par: Int): Boolean = {
+    dao.deleteXmlReport(par)
+    true
+  }
+
+  def updatePrices(par: List[PhrasePriceInfo]): Boolean = {
     val cs = dao.getCampaigns(login)
-    ppil map { ppi =>
+    par map { ppi =>
       {
         cs.find(_.id == ppi.CampaignID) map { c =>
           BannerPhrase.select(c, ppi.BannerID, ppi.PhraseID, 1) map

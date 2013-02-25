@@ -2,11 +2,10 @@ package controllers
 
 import models._
 import json_api.Convert._
-
 import play.api._
 import play.api.mvc._
-
 import play.api.libs.json._
+import dao.squerylorm.SquerylDao
 
 object Yandex extends Controller {
 
@@ -52,7 +51,7 @@ object Yandex extends Controller {
       }
 
       case "GetReportList" => {
-        Ok(wrap(toJson[ReportInfo](api.getReportList))) as JSON
+        Ok(wrap(toJson[List[ReportInfo]](api.getReportList))) as JSON
       }
 
       case "DeleteReport" => {
@@ -74,6 +73,11 @@ object Yandex extends Controller {
       }
 
     }
+  }
+
+  def report(reportId: Long) = Action {
+    val dao = new SquerylDao
+    Ok(scala.xml.XML.loadString(dao.getXmlReport(reportId).content)) as XML
   }
 
   def wrap(data: JsValue): JsValue = Json.toJson(Json.obj(("data" -> data)))
