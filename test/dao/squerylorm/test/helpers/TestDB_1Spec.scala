@@ -1,5 +1,7 @@
 package dao.squerylorm.test.helpers
 
+import models._
+
 import org.specs2.mutable._
 import org.specs2.specification._
 import play.api.test._
@@ -33,7 +35,7 @@ class TestDB_1Spec extends Specification with AllExpectations {
           u.length must_== (1)
           u.head.reports.length must_== (2)
           u.head.reports.head.user must_== (Some(u.head))
-          u.head.reports.head.content must be equalTo ("<a>Hello!</a>")
+          u.head.reports.head.content must be equalTo (NewReportInfo(1, "2013-01-01", "2013-01-01").toXML.toString)
 
           val c = AppSchema.campaigns.toList
           c.length must_== (5)

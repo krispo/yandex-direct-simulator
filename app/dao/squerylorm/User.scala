@@ -29,6 +29,8 @@ case class User(
 
 }
 object User {
+  def get_by_id(id: Long): User = inTransaction { AppSchema.users.where(a => a.id === id).single }
+
   def select(name: String): Option[User] = inTransaction {
     AppSchema.users.where(
       a => a.name === name).headOption

@@ -59,7 +59,7 @@ case class API(
 
   def createNewReport(par: NewReportInfo): Long = {
 
-    val content = <a>qwe</a>
+    val content = par.toXML //save to DB the NewReportInfo      
 
     dao.getUser(login) map { u =>
       val rep = dao.createXmlReport(u, content.toString)
@@ -78,7 +78,44 @@ case class API(
 
   }
 
-  def getXml(reportId: Long): Elem = XML.loadString(dao.getXmlReport(reportId).content)
+  def getXml(reportId: Long): Elem = {
+    import java.text._
+    import org.joda.time.DateTime
+    val date_fmt = new SimpleDateFormat("yyyy-MM-dd")
+
+    val report = dao.getXmlReport(reportId)
+    val xml_nri = XML.loadString(report.content)
+
+    val cID = (xml_nri \ "CampaignID").text.toLong
+    val sdate = (xml_nri \ "StartDate").text //date_fmt.parse()
+    val edate = (xml_nri \ "EndDate").text
+
+    val c = dao.getCampaign(
+      dao.getUser(report.user_id).name,
+      cID,
+      new DateTime(date_fmt.parse(sdate)),
+      new DateTime(date_fmt.parse(edate))).get
+
+    val xmlReport =
+      <report>
+        <reportID>{ reportId }</reportID>
+        <campaignID>{ cID }</campaignID>
+        <startDate>{ sdate }</startDate>
+        <endDate>{ edate }</endDate>
+        <phrasesDict>
+          {
+            for (bp <- c.bannerPhrases) yield <phrase type="phrase" phraseID={ bp.phrase.get.id.toString } value={ bp.phrase.get.phrase }/>
+          }
+        </phrasesDict>
+        <stat>
+          {
+            for (bp <- c.bannerPhrases) yield <row bannerID={ bp.banner.get.id.toString } phraseID={ bp.phrase.get.id.toString } phrase_id={ bp.phrase.get.id.toString } sum_search={ bp.performance.cost_search.toString } sum_context={ bp.performance.cost_context.toString } shows_search={ bp.performance.impress_search.toString } shows_context={ bp.performance.impress_context.toString } clicks_search={ bp.performance.clicks_search.toString } clicks_context={ bp.performance.clicks_context.toString } regionID={ bp.region.get.id.toString }/>
+          }
+        </stat>
+      </report>
+
+    xmlReport
+  }
 
   def deleteReport(par: Int): Int = dao.deleteXmlReport(par)
 

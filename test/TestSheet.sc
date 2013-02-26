@@ -1,3 +1,5 @@
+import scala.xml._
+
 object TestSheet {
   val a = List((6, 1), (6, 1), (4, 4), (4, 5), (4, 5))
                                                   //> a  : List[(Int, Int)] = List((6,1), (6,1), (4,4), (4,5), (4,5))
@@ -8,4 +10,6 @@ object TestSheet {
   val h = List(true,true,true)                    //> h  : List[Boolean] = List(true, true, true)
   h.find(!_).isDefined                            //> res3: Boolean = false
 
+
+	val xml = <report></report>               //> xml  : scala.xml.Elem = <report></report>
 }

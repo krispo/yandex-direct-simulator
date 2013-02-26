@@ -43,6 +43,8 @@ object AppSchema extends Schema {
   
   //User *-* Network relation
   val reports = table[Report]
+  on(reports)(r => declare(
+    r.content is (dbType("varchar(512)"))))
 
   // User -* Campaign relation
   val userCampaign = oneToManyRelation(users, campaigns).via((u, c) => u.id === c.user_id)

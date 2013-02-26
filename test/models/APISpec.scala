@@ -177,7 +177,26 @@ class APISpec extends Specification with AllExpectations {
       TestDB_1.creating_and_filling_inMemoryDB() {
         inTransaction {
           val res = API("").getXml(2)
-          res must be equalTo (<a>Hello!</a>)
+          (res \ "reportID").text must_== ("2")
+          (res \ "campaignID").text must_== ("1")
+          (res \ "startDate").text must_== ("2013-01-01")
+          (res \ "endDate").text must_== ("2013-01-01")
+
+          val c = AppSchema.campaigns.toList.head
+
+          ((res \ "phrasesDict" \\ "phrase").head \ "@phraseID").text.toLong must_== (1) //(c.bannerPhrases.head.phrase.get.id)
+          ((res \ "phrasesDict" \\ "phrase").head \ "@value").text must_== ("Phrase_0") //(c.bannerPhrases.head.phrase.get.phrase)
+
+          val row = (res \\ "row").head
+          (row \ "@bannerID").text.toInt must_== (1)
+          (row \ "@phraseID").text.toInt must_== (1)
+          (row \ "@phrase_id").text.toInt must_== (1)
+          (row \ "@sum_search").text.toDouble must_== (3660.0)
+          (row \ "@sum_context").text.toDouble must_== (3660.0)
+          (row \ "@shows_search").text.toInt must_== (18300)
+          (row \ "@shows_context").text.toInt must_== (18300)
+          (row \ "@clicks_search").text.toInt must_== (1830)
+          (row \ "@clicks_context").text.toInt must_== (1830)
         }
       }
     }

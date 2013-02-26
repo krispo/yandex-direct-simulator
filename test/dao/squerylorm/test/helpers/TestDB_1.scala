@@ -1,5 +1,6 @@
 package dao.squerylorm.test.helpers
 
+import models._
 import org.squeryl._
 import org.squeryl.PrimitiveTypeMode._
 import play.api.test._
@@ -38,7 +39,25 @@ object TestDB_1 extends AppHelpers {
       user.campaignsRel.associate(
         Campaign(user.id, name = "Campaign_" + i.toString, _login = "krisp0", _token = "token_1"))) toList
 
-    val reports = 0 until 2 map (_ => user.reportsRel.associate(Report(user.id, (<a>Hello!</a>).toString))) toList
+    //CampaignPerformance
+    def createCampaignPerformance(ts: Timestamp, i: Int): CampaignPerformance = {
+      CampaignPerformance(
+        campaign_id = campaigns.head.id,
+        //periodtype_id = periodTypes(0).id,
+        cost_search = 2 * i,
+        cost_context = 2 * i,
+        impress_search = 10 * i,
+        impress_context = 10 * i,
+        clicks_search = i,
+        clicks_context = i,
+        date = ts)
+    }
+    val campaignPerformances = 0 until 60 map
+      (i => createCampaignPerformance(plusMinutes(i), i + 1).put)
+
+    val reports = 0 until 2 map (_ =>
+      user.reportsRel.associate(
+        Report(user.id, NewReportInfo(1, "2013-01-01", "2013-01-01").toXML.toString))) toList
 
     //BudgetHistory
     val budgetHistory = 0 until 60 map { i =>
@@ -63,10 +82,10 @@ object TestDB_1 extends AppHelpers {
         phrase_id = phrases((i * 20) + j).id,
         region_id = region.id).put
 
-    //CampaignPerformance
-    def createCampaignPerformance(ts: Timestamp, i: Int): CampaignPerformance = {
-      CampaignPerformance(
-        campaign_id = campaigns.head.id,
+    //BannerPhrasePerformance
+    def createBannerPhrasePerformance(bp: BannerPhrase, ts: Timestamp, i: Int): BannerPhrasePerformance = {
+      BannerPhrasePerformance(
+        bannerphrase_id = bp.id,
         //periodtype_id = periodTypes(0).id,
         cost_search = 2 * i,
         cost_context = 2 * i,
@@ -76,8 +95,10 @@ object TestDB_1 extends AppHelpers {
         clicks_context = i,
         date = ts)
     }
-    val campaignPerformances = 0 until 60 map
-      (i => createCampaignPerformance(plusMinutes(i), i + 1).put)
+    val bannerPhrasePerformance = for (
+      i <- 0 until 60;
+      bp <- bannerPhrases
+    ) yield createBannerPhrasePerformance(bp, plusMinutes(i), i + 1).put
 
     //NetAdvisedBidHistory
     val netAdvisedBidHistory = for (i <- 0 until 60; bp <- bannerPhrases)

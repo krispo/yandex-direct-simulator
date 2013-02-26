@@ -49,6 +49,15 @@ case class BannerPhrase(
   //get History using Campaign.historyStartDate and historyEndDate
   lazy val performanceHistory = getBannerPhraseHistory[BannerPhrasePerformance](bannerPhrasePerformanceRel)
 
+  lazy val performance = BannerPhrasePerformance(
+    bannerphrase_id = id,
+    cost_search = performanceHistory.map(_.cost_search).sum,
+    cost_context = performanceHistory.map(_.cost_context).sum,
+    impress_search = performanceHistory.map(_.impress_search).sum,
+    impress_context = performanceHistory.map(_.impress_context).sum,
+    clicks_search = performanceHistory.map(_.clicks_search).sum,
+    clicks_context = performanceHistory.map(_.clicks_context).sum)
+
   // Campaign -* BannerPhrase relation
   lazy val campaignRel: ManyToOne[Campaign] = AppSchema.campaignBannerPhrases.right(this)
 

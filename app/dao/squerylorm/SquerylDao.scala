@@ -82,6 +82,7 @@ class SquerylDao extends dao.Dao {
   /**
    * select User by name
    */
+  def getUser(id: Long): domain.User = User.get_by_id(id)
   def getUser(name: String): Option[domain.User] = User.select(name)
   def getUser(name: String, password: String): Option[domain.User] = User.select(name, password)
 
