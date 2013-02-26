@@ -15,7 +15,7 @@ class SquerylDao extends dao.Dao {
    */
   def createXmlReport(user: domain.User, content: String) = Report(user.id, content).put
   def getXmlReport(reportId: Long) = Report.get_by_id(reportId)
-  def deleteXmlReport(reportId: Long) = Report.get_by_id(reportId).drop
+  def deleteXmlReport(reportId: Long) = inTransaction { AppSchema.reports deleteWhere (r => r.id === reportId.toInt) }
 
   def getCampaign(userName: String, campaignId: Long,
     historyStartDate: DateTime = sdate, historyEndDate: DateTime = edate) =

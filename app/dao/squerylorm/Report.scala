@@ -23,8 +23,6 @@ case class Report(
    * default put - save to db
    */
   def put(): Report = inTransaction { AppSchema.reports insert this }
-
-  def drop() = inTransaction { AppSchema.reports drop this.id.toInt }
 }
 
 object Report {

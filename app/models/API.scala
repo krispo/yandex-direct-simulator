@@ -76,10 +76,7 @@ case class API(
 
   }
 
-  def deleteReport(par: Int): Boolean = {
-    dao.deleteXmlReport(par)
-    true
-  }
+  def deleteReport(par: Int): Int = dao.deleteXmlReport(par)
 
   def updatePrices(par: List[PhrasePriceInfo]): Boolean = {
     val cs = dao.getCampaigns(login)

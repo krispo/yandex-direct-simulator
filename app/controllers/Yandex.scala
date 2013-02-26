@@ -56,7 +56,7 @@ object Yandex extends Controller {
 
       case "DeleteReport" => {
         param.asOpt[Int] map { s =>
-          if (api.deleteReport(s))
+          if (api.deleteReport(s) == s)
             Ok(wrap(JsNumber(1))) as JSON
           else
             BadRequest

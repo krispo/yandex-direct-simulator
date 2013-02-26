@@ -18,7 +18,7 @@ class APISpec extends Specification with AllExpectations {
   val date_fmt = new SimpleDateFormat("yyyy-MM-dd")
 
   /*------------- GetCampaignsList ---------------------------------------------------*/
-  "ShortCampaignInfo" should {
+  "GetCampaignsList" should {
     sequential
 
     "take TRUE data" in {
@@ -43,7 +43,7 @@ class APISpec extends Specification with AllExpectations {
   }
 
   /*------------- GetBanners ---------------------------------------------------*/
-  "BannerInfo" should {
+  "GetBanners" should {
     sequential
 
     "take TRUE data" in {
@@ -73,7 +73,7 @@ class APISpec extends Specification with AllExpectations {
   }
 
   /*------------- GetSummaryStat ---------------------------------------------------*/
-  "StatItem" should {
+  "GetSummaryStat" should {
     sequential
 
     "take TRUE data" in {
@@ -94,7 +94,7 @@ class APISpec extends Specification with AllExpectations {
   }
 
   /*------------- UpdatePrices ---------------------------------------------------*/
-  "PhrasePriceInfo" should {
+  "UpdatePrices" should {
     sequential
 
     "take TRUE data" in {
@@ -119,6 +119,49 @@ class APISpec extends Specification with AllExpectations {
           BannerPhrase.select(campaign = c, banner_id = 2, phrase_id = 23, region_id = 1).get.actualBidHistory.head.bid must_== (23.21)
 
           BannerPhrase.select(campaign = c, banner_id = 4, phrase_id = 75, region_id = 1).get.actualBidHistory.head.bid must_== (3)
+        }
+      }
+    }
+  }
+
+  /*------------- CreateNewReport ---------------------------------------------------*/
+  "CreateNewReport" should {
+    sequential
+
+    "take TRUE data" in {
+
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val res = API("krisp0", "token_1").createNewReport(
+            NewReportInfo(
+              CampaignID = 1,
+              StartDate = "2013-01-01",
+              EndDate = "2013-01-01"))
+          res must_== (3)
+
+          AppSchema.reports.toList.length must_== (3)
+        }
+      }
+    }
+  }
+
+  /*------------- DeleteReport ---------------------------------------------------*/
+  "DeleteReport" should {
+    sequential
+
+    "take TRUE data" in {
+
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val res = API("krisp0", "token_1").deleteReport(1)
+          res must_== (1)
+          AppSchema.reports.toList.length must_== (1)
+          AppSchema.reports.toList.head.id must_== (2)
+
+          val res2 = API("krisp0", "token_1").deleteReport(5)
+          res2 must_== (0)
+          AppSchema.reports.toList.length must_== (1)
+          AppSchema.reports.toList.head.id must_== (2)
         }
       }
     }
