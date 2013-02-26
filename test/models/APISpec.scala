@@ -145,6 +145,28 @@ class APISpec extends Specification with AllExpectations {
     }
   }
 
+  /*------------- getReportList ---------------------------------------------------*/
+  "GetReportList" should {
+    sequential
+
+    "take TRUE data" in {
+
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val conf = play.api.Play.current.configuration
+
+          val res = API("krisp0", "token_1").getReportList
+
+          res.length must_== (2)
+          res.head.ReportID must_== (1)
+          res.head.Url must_== (Some(conf.getString("uri").get + "/report/1"))
+          res.head.StatusReport must_== ("Done")
+          res.last.Url must_== (Some(conf.getString("uri").get + "/report/2"))
+        }
+      }
+    }
+  }
+
   /*------------- DeleteReport ---------------------------------------------------*/
   "DeleteReport" should {
     sequential
