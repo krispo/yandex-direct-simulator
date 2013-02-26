@@ -33,7 +33,7 @@ class TestDB_1Spec extends Specification with AllExpectations {
           u.length must_== (1)
           u.head.reports.length must_== (2)
           u.head.reports.head.user must_== (Some(u.head))
-          u.head.reports.head.content must be equalTo ("<a>Hello</a>")
+          u.head.reports.head.content must be equalTo ("<a>Hello!</a>")
 
           val c = AppSchema.campaigns.toList
           c.length must_== (5)

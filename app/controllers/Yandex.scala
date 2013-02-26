@@ -76,8 +76,7 @@ object Yandex extends Controller {
   }
 
   def report(reportId: Long) = Action {
-    val dao = new SquerylDao
-    Ok(scala.xml.XML.loadString(dao.getXmlReport(reportId).content)) as XML
+    Ok(API("").getXml(reportId)) as XML
   }
 
   def wrap(data: JsValue): JsValue = Json.toJson(Json.obj(("data" -> data)))

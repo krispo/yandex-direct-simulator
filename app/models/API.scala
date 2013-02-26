@@ -4,6 +4,8 @@ import json_api.Convert._
 import play.api.libs.json._
 import dao.squerylorm.{ SquerylDao, BannerPhrase }
 
+import scala.xml._
+
 case class API(
   val login: String,
   val token: String = "",
@@ -56,7 +58,7 @@ case class API(
     }
 
   def createNewReport(par: NewReportInfo): Long = {
-    import scala.xml._
+
     val content = <a>qwe</a>
 
     dao.getUser(login) map { u =>
@@ -75,6 +77,8 @@ case class API(
     } getOrElse List()
 
   }
+
+  def getXml(reportId: Long): Elem = XML.loadString(dao.getXmlReport(reportId).content)
 
   def deleteReport(par: Int): Int = dao.deleteXmlReport(par)
 

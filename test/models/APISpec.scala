@@ -167,6 +167,22 @@ class APISpec extends Specification with AllExpectations {
     }
   }
 
+  /*------------- GetXML ---------------------------------------------------*/
+  "getXml" should {
+    sequential
+
+    "take TRUE data" in {
+
+      import scala.xml._
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val res = API("").getXml(2)
+          res must be equalTo (<a>Hello!</a>)
+        }
+      }
+    }
+  }
+
   /*------------- DeleteReport ---------------------------------------------------*/
   "DeleteReport" should {
     sequential
