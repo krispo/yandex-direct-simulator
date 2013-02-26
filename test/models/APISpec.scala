@@ -206,7 +206,7 @@ class APISpec extends Specification with AllExpectations {
   "DeleteReport" should {
     sequential
 
-    "take TRUE data" in {
+    "delete head report" in {
 
       TestDB_1.creating_and_filling_inMemoryDB() {
         inTransaction {
@@ -219,6 +219,23 @@ class APISpec extends Specification with AllExpectations {
           res2 must_== (0)
           AppSchema.reports.toList.length must_== (1)
           AppSchema.reports.toList.head.id must_== (2)
+        }
+      }
+    }
+    
+    "delete last report" in {
+
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val res = API("krisp0", "token_1").deleteReport(2)
+          res must_== (1)
+          AppSchema.reports.toList.length must_== (1)
+          AppSchema.reports.toList.head.id must_== (1)
+
+          val res2 = API("krisp0", "token_1").deleteReport(5)
+          res2 must_== (0)
+          AppSchema.reports.toList.length must_== (1)
+          AppSchema.reports.toList.head.id must_== (1)
         }
       }
     }
