@@ -4,6 +4,10 @@ import org.squeryl.{ Session, SessionFactory }
 import play.api.db.DB
 import play.api.GlobalSettings
 
+import jobs._
+import play.api._
+import play.api.Play._
+
 import play.api.Application
 
 object Global extends GlobalSettings {
@@ -15,6 +19,14 @@ object Global extends GlobalSettings {
       case Some("com.mysql.jdbc.Driver") => Some(() => getSession(new MySQLInnoDBAdapter, app))
       case _ => sys.error("Database driver must be either org.h2.Driver or org.postgresql.Driver or com.mysql.jdbc.Driver")
     }
+
+    Logger.info("!!! Application has STARTED...")
+    if (true) Scheduler.start
+  }
+
+  override def onStop(app: Application) {
+    Logger.info("!!! Application has FINISHED...")
+    Scheduler.shutdown
   }
 
   def getSession(adapter: DatabaseAdapter, app: Application) = Session.create(DB.getConnection()(app), adapter)
