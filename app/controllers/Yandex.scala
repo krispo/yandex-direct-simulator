@@ -32,35 +32,35 @@ object Yandex extends Controller {
         Ok(wrap(toJson[List[ShortCampaignInfo]](api.getCampaignsList))) as JSON
       }
 
-      case "GetBanners" => { //++
+      case "GetBanners" => { //++     ActualBids and NetAdvisedBids
         fromJson[GetBannersInfo](param) map { s =>
           Ok(wrap(toJson[List[BannerInfo]](api.getBanners(s)))) as JSON
         } getOrElse BadRequest
       }
 
-      case "GetSummaryStat" => { //++
+      case "GetSummaryStat" => { //++    CampaignPerformance
         fromJson[GetSummaryStatRequest](param) map { s =>
           Ok(wrap(toJson[List[StatItem]](api.getSummaryStat(s)))) as JSON
         } getOrElse BadRequest
       }
 
-      case "CreateNewReport" => {
+      case "CreateNewReport" => { //++     BannerPhrasePerformance
         fromJson[NewReportInfo](param) map { s =>
           Ok(wrap(JsNumber(api.createNewReport(s)))) as JSON
         } getOrElse BadRequest
       }
 
-      case "GetReportList" => {
+      case "GetReportList" => { //++  
         Ok(wrap(toJson[List[ReportInfo]](api.getReportList))) as JSON
       }
 
-      case "DeleteReport" => {
+      case "DeleteReport" => { //++  
         param.asOpt[Int] map { s =>
           Ok(wrap(JsNumber(api.deleteReport(s)))) as JSON
         } getOrElse BadRequest
       }
 
-      case "UpdatePrices" => { //++
+      case "UpdatePrices" => { //++     update ActualBids
         fromJson[List[PhrasePriceInfo]](param) map { s =>
           if (!api.updatePrices(s))
             Ok(wrap(JsNumber(1))) as JSON

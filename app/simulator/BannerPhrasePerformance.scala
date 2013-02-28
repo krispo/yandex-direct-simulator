@@ -1,0 +1,5 @@
+package simulator
+
+object BannerPhrasePerformance {
+
+}
