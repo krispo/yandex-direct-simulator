@@ -8,14 +8,24 @@ import org.joda.time._
 import java.sql.Timestamp
 import scala.reflect._
 
+import domain.PositionValue._
+
 @BeanInfo
 case class BannerPhrase(
   val campaign_id: Long = 0, //fk
   val banner_id: Long = 0, //fk
   val phrase_id: Long = 0, //fk
-  val region_id: Long = 0 //fk
-  ) extends domain.BannerPhrase with KeyedEntity[Long] {
+  val region_id: Long = 0, //fk
+  //////////////// prior
+  val min: Double = 0,
+  val max: Double = 0,
+  val pMin: Double = 0,
+  val pMax: Double = 0,
+  val delta: Double = 0,
+  val N: Double = 0) extends domain.BannerPhrase with KeyedEntity[Long] {
   val id: Long = 0
+
+  lazy val prior: PositionValue = domain.PositionValue(min, max, pMin, pMax, delta)
 
   @Transient
   var campaign: Option[domain.Campaign] = None
@@ -87,11 +97,18 @@ case class BannerPhrase(
 }
 
 object BannerPhrase {
+  import domain.Position._
   def apply(bp: domain.BannerPhrase): BannerPhrase = BannerPhrase(
     campaign_id = bp.campaign.get.id,
     banner_id = bp.banner.get.id,
     phrase_id = bp.phrase.get.id,
-    region_id = bp.region.get.id)
+    region_id = bp.region.get.id,
+    min = bp.prior(_min),
+    max = bp.prior(_max),
+    pMin = bp.prior(_pMin),
+    pMax = bp.prior(_pMax),
+    delta = bp.prior(_delta),
+    N = bp.prior(_N))
 
   /**
    * select BannerPhrase for given Campaign, banner_id, phrase_id and region_id

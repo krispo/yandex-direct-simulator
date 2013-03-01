@@ -29,6 +29,13 @@ case class NetAdvisedBidHistory(
 
 object NetAdvisedBidHistory {
   /**
+   * get NetAdvisedBidHistory from DB
+   */
+  def get_by_id(id: Long): NetAdvisedBidHistory = inTransaction {
+    AppSchema.netadvisedbidhistory.where(a => a.id === id).single
+  }
+
+  /**
    * construct NetAdvisedBid from domain.NetAdvisedBidHistory and BannerPhrase
    */
   def apply(bp: domain.BannerPhrase, nb: domain.NetAdvisedBids): NetAdvisedBidHistory =
@@ -42,24 +49,19 @@ object NetAdvisedBidHistory {
       e = nb.e,
       f = nb.f)
 
-  def apply(bp: domain.BannerPhrase, mu: Map[String, Double], sigma: Map[String, Double], ts: Timestamp): NetAdvisedBidHistory = {
+  import domain.Position._
+  import domain.PositionValue._
+  def generate(bp: domain.BannerPhrase, mu: PositionValue, sigma: PositionValue, ts: Timestamp): NetAdvisedBidHistory = {
     import org.apache.commons.math3.random.RandomDataGenerator
     val r = new RandomDataGenerator()
     NetAdvisedBidHistory(
       bannerphrase_id = bp.id,
       date = ts,
-      a = r.nextGaussian(mu("a"), sigma("a")),
-      b = r.nextGaussian(mu("b"), sigma("b")),
-      c = r.nextGaussian(mu("c"), sigma("c")),
-      d = r.nextGaussian(mu("d"), sigma("d")),
-      e = r.nextGaussian(mu("e"), sigma("e")),
-      f = r.nextGaussian(mu("f"), sigma("f")))
-  }
-
-  /**
-   * get NetAdvisedBidHistory from DB
-   */
-  def get_by_id(id: Long): NetAdvisedBidHistory = inTransaction {
-    AppSchema.netadvisedbidhistory.where(a => a.id === id).single
+      a = r.nextGaussian(mu(_min), sigma(_min)),
+      b = r.nextGaussian(mu(_max), sigma(_max)),
+      c = r.nextGaussian(mu(_pMin), sigma(_pMin)),
+      d = r.nextGaussian(mu(_pMax), sigma(_pMax)),
+      e = r.nextGaussian(0, 1),
+      f = r.nextGaussian(0, 1))
   }
 }

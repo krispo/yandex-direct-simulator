@@ -19,7 +19,8 @@ trait BannerPhrase {
   lazy val netAdvisedBidsHistoryJList: JList[NetAdvisedBids] = netAdvisedBidsHistory
   def performanceHistory: List[Performance]
   lazy val performanceHistoryJList: JList[Performance] = performanceHistory
-  
+
   def performance: Performance
+  def prior: PositionValue.PositionValue
 }
 
