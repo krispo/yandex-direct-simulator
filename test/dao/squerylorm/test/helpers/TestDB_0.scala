@@ -34,6 +34,12 @@ object TestDB_0 extends AppHelpers {
         yield BannerPhrase(campaign.id,
         banner_id = banner.id,
         phrase_id = phrases(i).id,
-        region_id = region.id).put
+        region_id = region.id,
+        min = 0.01,
+        max = 0.1,
+        pMin = 0.15,
+        pMax = 0.2,
+        delta = 0.1,
+        N = 1000).put
   }
 }
