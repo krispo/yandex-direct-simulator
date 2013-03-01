@@ -4,11 +4,8 @@ import models._
 
 import org.specs2.mutable._
 import org.specs2.specification._
-import play.api.test._
-import play.api.test.Helpers._
 import org.squeryl.PrimitiveTypeMode._
-import dao.squerylorm._
-import dao.Dao
+import dao.squerylorm.AppSchema
 
 class TestDB_1Spec extends Specification with AllExpectations {
 

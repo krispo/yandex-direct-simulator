@@ -38,7 +38,7 @@ trait AppHelpers {
       block
     }
   }
-  
+
   /**
    * fills DB
    */

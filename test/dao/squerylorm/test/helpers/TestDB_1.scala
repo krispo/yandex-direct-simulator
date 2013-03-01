@@ -1,15 +1,8 @@
 package dao.squerylorm.test.helpers
 
 import models._
-import org.squeryl._
-import org.squeryl.PrimitiveTypeMode._
-import play.api.test._
-import play.api.test.Helpers._
-import org.joda.time
 import java.sql.Timestamp
-import scala.reflect._
 import dao.squerylorm._
-import scala.xml._
 
 object TestDB_1 extends AppHelpers {
   /*
@@ -23,7 +16,7 @@ object TestDB_1 extends AppHelpers {
    */
 
   def fill_DB() = {
-    val midnnight_formatter = time.format.DateTimeFormat.forPattern("yyyy-MM-dd")
+    val midnnight_formatter = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd")
     //set start_date
     val date = midnnight_formatter.parseDateTime("2013-01-01")
     // partially applied start_date
