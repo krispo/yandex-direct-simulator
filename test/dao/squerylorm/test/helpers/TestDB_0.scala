@@ -1,6 +1,8 @@
 package dao.squerylorm.test.helpers
 
 import dao.squerylorm._
+import java.sql.Timestamp
+import domain.PositionValue
 
 object TestDB_0 extends AppHelpers {
   /*
@@ -13,6 +15,9 @@ object TestDB_0 extends AppHelpers {
    */
 
   def fill_DB() = {
+    val dt_fmt = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd")
+    val date = dt_fmt.parseDateTime("2013-01-01")
+
     //create user
     val user = User("krisp0", "123").put
 
@@ -20,6 +25,10 @@ object TestDB_0 extends AppHelpers {
     val campaign = user.campaignsRel.associate(
       Campaign(user.id, name = "Campaign_0", _login = "krisp0"))
 
+    //CampaignPerformance
+    val campaignPerformance = CampaignPerformance(campaign_id = campaign.id, date = date).put
+
+    //Banner
     val banner = Banner("Banner_0").put
 
     //Phrases
@@ -35,11 +44,28 @@ object TestDB_0 extends AppHelpers {
         banner_id = banner.id,
         phrase_id = phrases(i).id,
         region_id = region.id,
+        //prior is like CTR 
         min = 0.01,
         max = 0.1,
         pMin = 0.15,
         pMax = 0.2,
         delta = 0.1,
+        //cumulative traffic during the day
         N = 1000).put
+
+    //BannerPhrasePerformance
+    val bannerPhrasePerformance = bannerPhrases map {
+      bp => BannerPhrasePerformance(bannerphrase_id = bp.id, date = date).put
+    }
+
+    //NetAdvisedBidHistory
+    val netAdvisedBidHistory = bannerPhrases map {
+      bp => NetAdvisedBidHistory(bannerphrase_id = bp.id, date = date).put
+    }
+
+    //ActualBidHistory
+    val actualBidHistory = bannerPhrases map {
+      bp => ActualBidHistory(bannerphrase_id = bp.id, date = date).put
+    }
   }
 }

@@ -29,9 +29,25 @@ class SquerylDaoSpec extends Specification with AllExpectations {
           val bp = AppSchema.bannerphrases.toList.head
           val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
           val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
+          val nb = dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(1))
+
+          AppSchema.netadvisedbidhistory.toList.length must_== (3+1)
+        }
+      }
+    }
+  }
+
+  "generateBannerPhrasePerformance(bp, dt)" should {
+    sequential
+    "put 5 NetAdvisedBids" in {
+      TestDB_0.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val bp = AppSchema.bannerphrases.toList.head
+          val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
+          val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
           val nb = 0 until 5 map (i => dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(i)))
 
-          AppSchema.netadvisedbidhistory.toList.length must_== (5)
+          AppSchema.netadvisedbidhistory.toList.length must_== (3+5)
         }
       }
     }
@@ -47,7 +63,7 @@ class SquerylDaoSpec extends Specification with AllExpectations {
           val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
           val nb = 0 until 5 map (i => dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(i)))
 
-          AppSchema.netadvisedbidhistory.toList.length must_== (5)
+          AppSchema.netadvisedbidhistory.toList.length must_== (3+5)
         }
       }
     }

@@ -51,6 +51,7 @@ class TestDB_1Spec extends Specification with AllExpectations {
           AppSchema.regions.toList.length must_== (1)
 
           AppSchema.bannerphrases.toList.length must_== (100)
+          AppSchema.bannerphraseperformance.toList.length must_== (6000)
 
           val cperf = AppSchema.campaignperformance.toList
           cperf.length must_== (60)

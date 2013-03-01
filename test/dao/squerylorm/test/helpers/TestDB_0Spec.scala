@@ -25,11 +25,16 @@ class TestDB_0Spec extends Specification with AllExpectations {
           c.head.banners.length must_== (1)
           c.head.banners.head.text must_== ("Banner_0")
 
+          AppSchema.campaignperformance.toList.length must_== (1)
+
           AppSchema.banners.toList.length must_== (1)
           AppSchema.phrases.toList.length must_== (3)
           AppSchema.regions.toList.length must_== (1)
 
           AppSchema.bannerphrases.toList.length must_== (3)
+          AppSchema.bannerphraseperformance.toList.length must_== (3)
+          AppSchema.netadvisedbidhistory.toList.length must_== (3)
+          AppSchema.actualbidhistory.toList.length must_== (3)
         }
       }
     }
