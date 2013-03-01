@@ -54,7 +54,7 @@ object BannerPhrasePerformance {
 
   import domain.Position._
   import domain.PositionValue._
-  def generate(bp: BannerPhrase, ts: Timestamp): BannerPhrasePerformance = {
+  def generate(bp: domain.BannerPhrase, ts: Timestamp): BannerPhrasePerformance = {
     /**
      * q - shows(or impress) probability
      * p - clicks prior probability
@@ -67,7 +67,7 @@ object BannerPhrasePerformance {
     val r = new RandomDataGenerator()
 
     val nb = bp.netAdvisedBidsHistory.head
-    val bid = bp.actualBidHistory.head.bid
+    val bid = bp.actualBidHistory.head.elem
     val dt_next = new DateTime(ts)
     val dt_prev = bp.performanceHistory.headOption.map(_.dateTime).getOrElse(dt_next.minusMinutes(dt_next.getMinuteOfDay()))
 

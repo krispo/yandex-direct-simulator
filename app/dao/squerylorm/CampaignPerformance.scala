@@ -48,7 +48,7 @@ object CampaignPerformance {
     date = p.dateTime)
 
   def generate(c: domain.Campaign): CampaignPerformance = CampaignPerformance(
-    campaign_id = c.id,
+    campaign_id = c.id, 
     cost_search = c.bannerPhrases.map(bp => bp.performanceHistory.head.cost_search).sum,
     cost_context = c.bannerPhrases.map(bp => bp.performanceHistory.head.cost_context).sum,
     impress_search = c.bannerPhrases.map(bp => bp.performanceHistory.head.impress_search).sum,

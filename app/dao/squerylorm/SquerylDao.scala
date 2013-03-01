@@ -86,6 +86,21 @@ class SquerylDao extends dao.Dao {
   def getUser(name: String): Option[domain.User] = User.select(name)
   def getUser(name: String, password: String): Option[domain.User] = User.select(name, password)
 
+  /**
+   * data simulator
+   */
+  import domain.Position._
+  import domain.PositionValue._
+
+  def generateNetAdvisedBids(bp: domain.BannerPhrase, mu: PositionValue, sigma: PositionValue, dt: DateTime): NetAdvisedBidHistory =
+    NetAdvisedBidHistory.generate(bp, mu, sigma, dt).put
+
+  def generateBannerPhrasePerformance(bp: domain.BannerPhrase, dt: DateTime): BannerPhrasePerformance =
+    BannerPhrasePerformance.generate(bp, dt).put
+
+  def generateCampaignPerformance(c: domain.Campaign): CampaignPerformance =
+    CampaignPerformance.generate(c).put
+
   def clearDB: Boolean = {
     import scala.util.control.Exception._
     inTransaction {
