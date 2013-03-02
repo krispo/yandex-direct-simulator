@@ -51,7 +51,7 @@ object TestDB_0 extends AppHelpers {
         pMax = 0.2,
         delta = 0.1,
         //cumulative traffic during the day
-        N = 1000).put
+        n = 10000).put
 
     //BannerPhrasePerformance
     val bannerPhrasePerformance = bannerPhrases map {
@@ -60,12 +60,12 @@ object TestDB_0 extends AppHelpers {
 
     //NetAdvisedBidHistory
     val netAdvisedBidHistory = bannerPhrases map {
-      bp => NetAdvisedBidHistory(bannerphrase_id = bp.id, date = date).put
+      bp => NetAdvisedBidHistory(bannerphrase_id = bp.id, date = date, a = 0.01, b = 2.00, c = 2.50, d = 3.00).put
     }
 
     //ActualBidHistory
-    val actualBidHistory = bannerPhrases map {
-      bp => ActualBidHistory(bannerphrase_id = bp.id, date = date).put
+    val actualBidHistory = bannerPhrases map { //bp id's = {1,2,3}
+      bp => ActualBidHistory(bannerphrase_id = bp.id, date = date, bid = bp.id).put
     }
   }
 }

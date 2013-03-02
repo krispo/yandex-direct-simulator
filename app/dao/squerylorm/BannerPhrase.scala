@@ -22,7 +22,7 @@ case class BannerPhrase(
   val pMin: Double = 0,
   val pMax: Double = 0,
   val delta: Double = 0,
-  val N: Double = 0) extends domain.BannerPhrase with KeyedEntity[Long] {
+  val n: Long = 0) extends domain.BannerPhrase with KeyedEntity[Long] {
   val id: Long = 0
 
   lazy val prior: PositionValue = domain.PositionValue(min, max, pMin, pMax, delta)
@@ -108,7 +108,7 @@ object BannerPhrase {
     pMin = bp.prior(_pMin),
     pMax = bp.prior(_pMax),
     delta = bp.prior(_delta),
-    N = bp.prior(_N))
+    n = bp.n)
 
   /**
    * select BannerPhrase for given Campaign, banner_id, phrase_id and region_id

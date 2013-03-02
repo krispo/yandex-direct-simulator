@@ -72,9 +72,10 @@ object BannerPhrasePerformance {
     val dt_prev = bp.performanceHistory.headOption.map(_.dateTime).getOrElse(dt_next.minusMinutes(dt_next.getMinuteOfDay()))
 
     def bpp(positionValue: Double, position: Position) = {
-      val q = if (bid < positionValue + bp.prior(_delta)) (bid - positionValue) / bp.prior(_delta) else 1
-      val shows = r.nextBinomial((bp.prior(_N) * trafficDiff(dt_prev, dt_next)).toInt, q)
+      val q = if (bid < positionValue + bp.prior(_delta)) (bid - positionValue + 0.1) / (bp.prior(_delta) + 0.1) else 1
+      val shows = r.nextBinomial((bp.n * trafficDiff(dt_prev, dt_next)).toInt, q)
       val clicks = r.nextBinomial(shows, bp.prior(position))
+
       BannerPhrasePerformance(
         bannerphrase_id = bp.id,
         cost_search = clicks * bid,
@@ -85,10 +86,11 @@ object BannerPhrasePerformance {
         clicks_context = clicks,
         date = ts)
     }
+
     if (bid < nb.a) BannerPhrasePerformance(bannerphrase_id = bp.id, date = ts) //_bottom
     else if (bid < nb.b) bpp(nb.a, _min) //_min
-    else if (bid < nb.c) bpp(nb.a, _max) //_max
-    else if (bid < nb.d) bpp(nb.a, _pMin) //_pMin
-    else bpp(nb.a, _pMax) //_pMax
+    else if (bid < nb.c) bpp(nb.b, _max) //_max
+    else if (bid < nb.d) bpp(nb.c, _pMin) //_pMin
+    else bpp(nb.d, _pMax) //_pMax
   }
 }

@@ -26,28 +26,17 @@ class SquerylDaoSpec extends Specification with AllExpectations {
     "just drop and recreate schema and fill DB" in {
       TestDB_0.creating_and_filling_DB() {
         inTransaction {
-          val bp = AppSchema.bannerphrases.toList.head
-          val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
+          //val c = AppSchema.campaigns.toList.head
+          val c = dao.getCampaign("krisp0", 1).get
+          val bp = c.bannerPhrases.head
+
+          /*val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
           val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
           val nb = dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(1))
+          AppSchema.netadvisedbidhistory.toList.length must_== (3 + 1)*/
 
-          AppSchema.netadvisedbidhistory.toList.length must_== (3+1)
-        }
-      }
-    }
-  }
-
-  "generateBannerPhrasePerformance(bp, dt)" should {
-    sequential
-    "put 5 NetAdvisedBids" in {
-      TestDB_0.creating_and_filling_inMemoryDB() {
-        inTransaction {
-          val bp = AppSchema.bannerphrases.toList.head
-          val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
-          val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
-          val nb = 0 until 5 map (i => dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(i)))
-
-          AppSchema.netadvisedbidhistory.toList.length must_== (3+5)
+          val nb = 1 to 5 map (i => dao.generateBannerPhrasePerformance(bp, plusMinutes(i)))
+          AppSchema.bannerphraseperformance.toList.length must_== (3 + 5)
         }
       }
     }
@@ -61,9 +50,24 @@ class SquerylDaoSpec extends Specification with AllExpectations {
           val bp = AppSchema.bannerphrases.toList.head
           val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
           val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
-          val nb = 0 until 5 map (i => dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(i)))
+          val nb = 1 to 5 map (i => dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(i)))
 
-          AppSchema.netadvisedbidhistory.toList.length must_== (3+5)
+          AppSchema.netadvisedbidhistory.toList.length must_== (3 + 5)
+        }
+      }
+    }
+  }
+
+  "generateBannerPhrasePerformance(bp, dt)" should {
+    sequential
+    "put 5 BannerPhrasePerformance elements" in {
+      TestDB_0.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val c = AppSchema.campaigns.toList.head
+          val bp = c.bannerPhrases.head
+          val nb = 1 to 5 map (i => dao.generateBannerPhrasePerformance(bp, plusMinutes(i)))
+
+          AppSchema.bannerphraseperformance.toList.length must_== (3 + 5)
         }
       }
     }

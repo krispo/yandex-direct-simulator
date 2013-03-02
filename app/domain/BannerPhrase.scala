@@ -22,5 +22,6 @@ trait BannerPhrase {
 
   def performance: Performance
   def prior: PositionValue.PositionValue
+  def n: Long //coefficient for traffic function - how many requests during the whole day
 }
 
