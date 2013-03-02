@@ -47,15 +47,15 @@ object CampaignPerformance {
     clicks_context = p.clicks_context,
     date = p.dateTime)
 
-  def generate(c: domain.Campaign): CampaignPerformance = CampaignPerformance(
-    campaign_id = c.id, 
+  def generate(c: domain.Campaign, ts: Timestamp): CampaignPerformance = CampaignPerformance(
+    campaign_id = c.id,
     cost_search = c.bannerPhrases.map(bp => bp.performanceHistory.head.cost_search).sum,
     cost_context = c.bannerPhrases.map(bp => bp.performanceHistory.head.cost_context).sum,
     impress_search = c.bannerPhrases.map(bp => bp.performanceHistory.head.impress_search).sum,
     impress_context = c.bannerPhrases.map(bp => bp.performanceHistory.head.impress_context).sum,
     clicks_search = c.bannerPhrases.map(bp => bp.performanceHistory.head.clicks_search).sum,
-    clicks_context = c.bannerPhrases.map(bp => bp.performanceHistory.head.clicks_context).sum)
-
+    clicks_context = c.bannerPhrases.map(bp => bp.performanceHistory.head.clicks_context).sum,
+    date = ts)
 }
 
 

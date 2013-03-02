@@ -33,10 +33,13 @@ class SquerylDaoSpec extends Specification with AllExpectations {
           /*val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
           val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
           val nb = dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(1))
-          AppSchema.netadvisedbidhistory.toList.length must_== (3 + 1)*/
+          AppSchema.netadvisedbidhistory.toList.length must_== (3 + 1)
 
           val nb = 1 to 5 map (i => dao.generateBannerPhrasePerformance(bp, plusMinutes(i)))
-          AppSchema.bannerphraseperformance.toList.length must_== (3 + 5)
+          AppSchema.bannerphraseperformance.toList.length must_== (3 + 5)*/
+
+          dao.generateCampaignPerformance(c, plusMinutes(1))
+          AppSchema.campaignperformance.toList.length must_== (1 + 1)
         }
       }
     }
@@ -68,6 +71,26 @@ class SquerylDaoSpec extends Specification with AllExpectations {
           val nb = 1 to 5 map (i => dao.generateBannerPhrasePerformance(bp, plusMinutes(i)))
 
           AppSchema.bannerphraseperformance.toList.length must_== (3 + 5)
+        }
+      }
+    }
+  }
+
+  "generateCampaignPerformance(c)" should {
+    sequential
+    "put 5 BannerPhrasePerformance elements" in {
+      TestDB_0.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val c = dao.getCampaign("krisp0", 1).get
+          dao.generateCampaignPerformance(c, plusMinutes(1))
+
+          val cpl = AppSchema.campaignperformance.toList
+          cpl.length must_== (1 + 1)
+          val cp = cpl.filter(cp => cp.dateTime == plusMinutes(1)).head
+          cp.campaign_id must_== (1)
+          cp.cost_context must_== (6)
+          cp.impress_context must_== (30)
+          cp.clicks_context must_== (3)
         }
       }
     }

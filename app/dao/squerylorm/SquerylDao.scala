@@ -98,8 +98,8 @@ class SquerylDao extends dao.Dao {
   def generateBannerPhrasePerformance(bp: domain.BannerPhrase, dt: DateTime): BannerPhrasePerformance =
     BannerPhrasePerformance.generate(bp, dt).put
 
-  def generateCampaignPerformance(c: domain.Campaign): CampaignPerformance =
-    CampaignPerformance.generate(c).put
+  def generateCampaignPerformance(c: domain.Campaign, dt: DateTime): CampaignPerformance =
+    CampaignPerformance.generate(c, dt).put
 
   def clearDB: Boolean = {
     import scala.util.control.Exception._

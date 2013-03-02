@@ -55,7 +55,16 @@ object TestDB_0 extends AppHelpers {
 
     //BannerPhrasePerformance
     val bannerPhrasePerformance = bannerPhrases map {
-      bp => BannerPhrasePerformance(bannerphrase_id = bp.id, date = date).put
+      bp =>
+        BannerPhrasePerformance(
+          bannerphrase_id = bp.id,
+          cost_search = 2,
+          cost_context = 2,
+          impress_search = 10,
+          impress_context = 10,
+          clicks_search = 1,
+          clicks_context = 1,
+          date = date).put
     }
 
     //NetAdvisedBidHistory
