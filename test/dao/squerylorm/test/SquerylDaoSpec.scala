@@ -19,26 +19,7 @@ class SquerylDaoSpec extends Specification with AllExpectations {
   val date = dt_fmt.parseDateTime("2013-01-01")
   val plusMinutes = date.plusMinutes _
 
-  //work with postgreSQL DB
-  "fill postgreSQL DB with generating data" should {
-    sequential
-
-    "just drop and recreate schema and fill DB" in {
-      TestDB_0.creating_and_filling_DB() {
-        inTransaction {
-
-          //generate Budget
-          dao.generateBudget(dao.getCampaign("krisp0", 1).get, plusMinutes(1))
-          AppSchema.budgethistory.toList.length must_== (1 + 1)
-          val bh = dao.getCampaign("krisp0", 1).get.budgetHistory
-          bh.length must_== (2)
-          bh.head.budget must_== (96)
-
-        }
-      }
-    }
-  }
-
+  //work with inMemory DB
   "generateNetAdvisedBids(bp, mu, sigma, dt)" should {
     sequential
     "put 5 NetAdvisedBids" in {
@@ -108,4 +89,53 @@ class SquerylDaoSpec extends Specification with AllExpectations {
     }
   }
 
+  "fill inMemory DB with generating data" should {
+    sequential
+
+    "just create schema and fill DB with single full generating step" in {
+      TestDB_0.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          //generate NetAdvisedBids
+          var c = dao.getCampaign("krisp0", 1).get
+          var bp = c.bannerPhrases.head
+
+          val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
+          val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
+
+          dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(1))
+          AppSchema.netadvisedbidhistory.toList.length must_== (3 + 1)
+
+          c = dao.getCampaign("krisp0", 1).get
+          bp = c.bannerPhrases.head
+          bp.netAdvisedBidsHistory.length must_== (2)
+
+          //generate BannerPhrasePerformance
+          c = dao.getCampaign("krisp0", 1).get
+          bp = c.bannerPhrases.head
+          dao.generateBannerPhrasePerformance(bp, plusMinutes(1))
+          AppSchema.bannerphraseperformance.toList.length must_== (3 + 1)
+
+          c = dao.getCampaign("krisp0", 1).get
+          bp = c.bannerPhrases.head
+          bp.performanceHistory.length must_== (2)
+
+          //generate CampaignPerformance
+          c = dao.getCampaign("krisp0", 1).get
+          dao.generateCampaignPerformance(c, plusMinutes(1))
+          AppSchema.campaignperformance.toList.length must_== (1 + 1)
+
+          c = dao.getCampaign("krisp0", 1).get
+          c.performanceHistory.length must_== (2)
+
+          //generate Budget
+          c = dao.getCampaign("krisp0", 1).get
+          dao.generateBudget(c, plusMinutes(1))
+          AppSchema.budgethistory.toList.length must_== (1 + 1)
+
+          c = dao.getCampaign("krisp0", 1).get
+          c.budgetHistory.length must_== (2)
+        }
+      }
+    }
+  }
 }
