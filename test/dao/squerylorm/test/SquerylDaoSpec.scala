@@ -19,6 +19,53 @@ class SquerylDaoSpec extends Specification with AllExpectations {
   val date = dt_fmt.parseDateTime("2013-01-01")
   val plusMinutes = date.plusMinutes _
 
+  //work with postgreSQL DB
+  "fill postgreSQL DB with generating data" should {
+    sequential
+
+    "just drop and recreate schema and fill DB with 10 full generating steps" in {
+      TestDB_0.creating_and_filling_DB() {
+        inTransaction {
+          //var c = dao.getCampaign("krisp0", 1).get
+          //var bp = c.bannerPhrases.head
+          for (i <- 1 to 10) yield {
+
+            //generate NetAdvisedBids
+            var c = dao.getCampaign("krisp0", 1).get
+            var bp = c.bannerPhrases.head
+            val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
+            val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
+            dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(1))
+            AppSchema.netadvisedbidhistory.toList.length must_== (3 + i)
+
+            //generate BannerPhrasePerformance
+            c = dao.getCampaign("krisp0", 1).get
+            bp = c.bannerPhrases.head
+            dao.generateBannerPhrasePerformance(bp, plusMinutes(1))
+            AppSchema.bannerphraseperformance.toList.length must_== (3 + i)
+
+            //generate CampaignPerformance
+            c = dao.getCampaign("krisp0", 1).get
+            dao.generateCampaignPerformance(c, plusMinutes(1))
+            AppSchema.campaignperformance.toList.length must_== (1 + i)
+
+            //generate Budget
+            c = dao.getCampaign("krisp0", 1).get
+            dao.generateBudget(c, plusMinutes(1))
+            AppSchema.budgethistory.toList.length must_== (1 + i)
+          }
+
+          val c = dao.getCampaign("krisp0", 1).get
+          val bp = c.bannerPhrases.head
+          bp.netAdvisedBidsHistory.length must_== (11)
+          bp.performanceHistory.length must_== (11)
+          c.performanceHistory.length must_== (11)
+          c.budgetHistory.length must_== (11)
+        }
+      }
+    }
+  }
+
   //work with inMemory DB
   "generateNetAdvisedBids(bp, mu, sigma, dt)" should {
     sequential
