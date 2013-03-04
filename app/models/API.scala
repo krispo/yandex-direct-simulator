@@ -120,13 +120,15 @@ case class API(
   def deleteReport(par: Int): Int = dao.deleteXmlReport(par)
 
   def updatePrices(par: List[PhrasePriceInfo]): Boolean = {
+    import org.joda.time.DateTime
+    val dt = DateTime.now()
     val cs = dao.getCampaigns(login)
     par map { ppi =>
       {
         cs.find(_.id == ppi.CampaignID) map { c =>
           BannerPhrase.select(c, ppi.BannerID, ppi.PhraseID, 1) map
             { bp =>
-              dao.updatePrices(bp.id, ppi.Price)
+              dao.updatePrices(bp.id, ppi.Price, dt)
               true
             } getOrElse false
         } getOrElse false

@@ -69,7 +69,7 @@ object BannerPhrasePerformance {
     val nb = bp.netAdvisedBidsHistory.head
     val bid = bp.actualBidHistory.head.elem
     val dt_next = new DateTime(ts)
-    val dt_prev = bp.performanceHistory.headOption.map(_.dateTime).getOrElse(dt_next.minusMinutes(dt_next.getMinuteOfDay()))
+    val dt_prev = bp.performanceHistory.headOption.map(p => p.dateTime).getOrElse(dt_next.minusMinutes(dt_next.getMinuteOfDay()))
 
     def bpp(positionValue: Double, position: Position) = {
       val q = if (bid < positionValue + bp.prior(_delta)) (bid - positionValue + 0.1) / (bp.prior(_delta) + 0.1) else 1

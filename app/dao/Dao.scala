@@ -51,6 +51,6 @@ trait Dao {
    * @throw java.util.RunTimeException
    */
 
-  def updatePrices(bp_id: Long, bid: Double)
+  def updatePrices(bp_id: Long, bid: Double, dt: DateTime)
 
 }

@@ -26,20 +26,14 @@ class SquerylDaoSpec extends Specification with AllExpectations {
     "just drop and recreate schema and fill DB" in {
       TestDB_0.creating_and_filling_DB() {
         inTransaction {
-          //val c = AppSchema.campaigns.toList.head
-          val c = dao.getCampaign("krisp0", 1).get
-          val bp = c.bannerPhrases.head
 
-          /*val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
-          val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
-          val nb = dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(1))
-          AppSchema.netadvisedbidhistory.toList.length must_== (3 + 1)
+          //generate Budget
+          dao.generateBudget(dao.getCampaign("krisp0", 1).get, plusMinutes(1))
+          AppSchema.budgethistory.toList.length must_== (1 + 1)
+          val bh = dao.getCampaign("krisp0", 1).get.budgetHistory
+          bh.length must_== (2)
+          bh.head.budget must_== (96)
 
-          val nb = 1 to 5 map (i => dao.generateBannerPhrasePerformance(bp, plusMinutes(i)))
-          AppSchema.bannerphraseperformance.toList.length must_== (3 + 5)*/
-
-          dao.generateCampaignPerformance(c, plusMinutes(1))
-          AppSchema.campaignperformance.toList.length must_== (1 + 1)
         }
       }
     }
@@ -78,7 +72,7 @@ class SquerylDaoSpec extends Specification with AllExpectations {
 
   "generateCampaignPerformance(c)" should {
     sequential
-    "put 5 BannerPhrasePerformance elements" in {
+    "put 1 campaignPerformance elements" in {
       TestDB_0.creating_and_filling_inMemoryDB() {
         inTransaction {
           val c = dao.getCampaign("krisp0", 1).get
@@ -95,4 +89,23 @@ class SquerylDaoSpec extends Specification with AllExpectations {
       }
     }
   }
+
+  "generateBudget(c, dt)" should {
+    sequential
+    "put 1 budget elements" in {
+      TestDB_0.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val c = AppSchema.campaigns.toList.head
+          dao.generateBudget(c, plusMinutes(1))
+
+          val bh = AppSchema.budgethistory.toList
+          bh.length must_== (1 + 1)
+          val b = bh.filter(b => b.dateTime == plusMinutes(1)).head
+          b.campaign_id must_== (1)
+          b.budget must_== (96)
+        }
+      }
+    }
+  }
+
 }

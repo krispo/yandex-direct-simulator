@@ -58,11 +58,11 @@ class APISpec extends Specification with AllExpectations {
           res.head.Phrases.head.BannerID must_== (1)
           res.head.Phrases.head.CampaignID must_== (1)
           res.head.Phrases.head.Phrase must_== ("Phrase_0")
-          res.head.Phrases.head.Min must_== (0)
-          res.head.Phrases.head.Max must_== (1)
-          res.head.Phrases.head.PremiumMin must_== (3)
-          res.head.Phrases.head.PremiumMax must_== (4)
-          res.head.Phrases.head.Price must_== (3)
+          res.head.Phrases.head.Min must_== (59.0)
+          res.head.Phrases.head.Max must_== (60.0)
+          res.head.Phrases.head.PremiumMin must_== (62.0)
+          res.head.Phrases.head.PremiumMax must_== (63.0)
+          res.head.Phrases.head.Price must_== (62.0)
 
           res.last.BannerID must_== (5)
           res.last.Text must_== ("Banner_4")
@@ -118,7 +118,7 @@ class APISpec extends Specification with AllExpectations {
           BannerPhrase.select(campaign = c, banner_id = 2, phrase_id = 22, region_id = 1).get.actualBidHistory.head.bid must_== (22.21)
           BannerPhrase.select(campaign = c, banner_id = 2, phrase_id = 23, region_id = 1).get.actualBidHistory.head.bid must_== (23.21)
 
-          BannerPhrase.select(campaign = c, banner_id = 4, phrase_id = 75, region_id = 1).get.actualBidHistory.head.bid must_== (3)
+          BannerPhrase.select(campaign = c, banner_id = 4, phrase_id = 75, region_id = 1).get.actualBidHistory.head.bid must_== (62)
         }
       }
     }

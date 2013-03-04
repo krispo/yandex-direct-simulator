@@ -49,8 +49,8 @@ class SquerylDao extends dao.Dao {
   /**
    * UpdatePrices
    */
-  def updatePrices(bp_id: Long, bid: Double) =
-    ActualBidHistory(bannerphrase_id = bp_id, bid = bid).put()
+  def updatePrices(bp_id: Long, bid: Double, dt: DateTime) =
+    ActualBidHistory(bannerphrase_id = bp_id, date = dt, bid = bid).put()
 
   /**
    * retrieves full domain model (Campaign and its Histories) for given Dates from DB
@@ -100,6 +100,12 @@ class SquerylDao extends dao.Dao {
 
   def generateCampaignPerformance(c: domain.Campaign, dt: DateTime): CampaignPerformance =
     CampaignPerformance.generate(c, dt).put
+
+  def generateBudget(c: domain.Campaign, dt: DateTime): BudgetHistory =
+    BudgetHistory(
+      c.id,
+      dt,
+      c.budgetHistory.head.elem - (c.performanceHistory.head.cost_context + c.performanceHistory.head.cost_search)).put
 
   def clearDB: Boolean = {
     import scala.util.control.Exception._

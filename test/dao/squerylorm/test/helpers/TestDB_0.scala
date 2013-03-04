@@ -26,7 +26,19 @@ object TestDB_0 extends AppHelpers {
       Campaign(user.id, name = "Campaign_0", _login = "krisp0"))
 
     //CampaignPerformance
-    val campaignPerformance = CampaignPerformance(campaign_id = campaign.id, date = date).put
+    val campaignPerformance = CampaignPerformance(
+        campaign_id = campaign.id, 
+        cost_search = 2 ,
+        cost_context = 2 ,
+        impress_search = 10 ,
+        impress_context = 10 ,
+        clicks_search = 1,
+        clicks_context = 1,
+        date = date).put
+
+    //BudgetHistory
+    val budgetHistory = campaign.budgetHistoryRel.associate(
+      BudgetHistory(campaign_id = 1, date = date, budget = 100))
 
     //Banner
     val banner = Banner("Banner_0").put

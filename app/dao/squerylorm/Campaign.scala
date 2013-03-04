@@ -45,12 +45,12 @@ case class Campaign(
     from(qRel)((b) =>
       where(b.date >= convertToJdbc(historyStartDate)
         and b.date <= convertToJdbc(historyEndDate.plusDays(1).minusMillis(1)))
-        select (b) orderBy (b.date asc)).toList
+        select (b) orderBy (b.date desc)).toList
   }
   else Nil
 
   lazy val budgetHistory = getHistory[BudgetHistory](budgetHistoryRel)
-  def budget = budgetHistory.lastOption map (_.budget)
+  def budget = budgetHistory.headOption map (_.budget)
 
   def user = None
   def login = Some(_login)

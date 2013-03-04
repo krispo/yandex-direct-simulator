@@ -41,7 +41,7 @@ case class BannerPhrase(
       from(qRel)((b) =>
         where(b.date >= convertToJdbc(campaign.historyStartDate)
           and b.date <= convertToJdbc(campaign.historyEndDate.plusDays(1).minusMillis(1)))
-          select (b) orderBy (b.date asc)).toList
+          select (b) orderBy (b.date desc)).toList
     }
     case _ => Nil
   }
