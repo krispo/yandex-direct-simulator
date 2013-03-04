@@ -40,7 +40,7 @@ package object squerylorm {
     if (mn < mp)
       traffic(mn) + (1 - traffic(mp))
     else
-      traffic(mn)
+      traffic(mn) - traffic(mp)
   }
 
   //def trafficFunction(dt: DateTime): Double = 1.1 - cos(dt.getMinuteOfDay() * Pi / m - Pi / 8)

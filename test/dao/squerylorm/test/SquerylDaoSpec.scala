@@ -35,23 +35,23 @@ class SquerylDaoSpec extends Specification with AllExpectations {
             var bp = c.bannerPhrases.head
             val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
             val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
-            dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(1))
+            dao.generateNetAdvisedBids(bp, mu, sigma, plusMinutes(10 * i))
             AppSchema.netadvisedbidhistory.toList.length must_== (3 + i)
 
             //generate BannerPhrasePerformance
             c = dao.getCampaign("krisp0", 1).get
             bp = c.bannerPhrases.head
-            dao.generateBannerPhrasePerformance(bp, plusMinutes(1))
+            dao.generateBannerPhrasePerformance(bp, plusMinutes(10 * i))
             AppSchema.bannerphraseperformance.toList.length must_== (3 + i)
 
             //generate CampaignPerformance
             c = dao.getCampaign("krisp0", 1).get
-            dao.generateCampaignPerformance(c, plusMinutes(1))
+            dao.generateCampaignPerformance(c, plusMinutes(10 * i))
             AppSchema.campaignperformance.toList.length must_== (1 + i)
 
             //generate Budget
             c = dao.getCampaign("krisp0", 1).get
-            dao.generateBudget(c, plusMinutes(1))
+            dao.generateBudget(c, plusMinutes(10 * i))
             AppSchema.budgethistory.toList.length must_== (1 + i)
           }
 
@@ -113,6 +113,12 @@ class SquerylDaoSpec extends Specification with AllExpectations {
           cp.cost_context must_== (6)
           cp.impress_context must_== (30)
           cp.clicks_context must_== (3)
+          
+          val _cp = dao.getCampaign("krisp0", 1,date,date).get.performance //cumulative performance during the current day
+          _cp.campaign_id must_== (1)
+          _cp.cost_context must_== (8)
+          _cp.impress_context must_== (40)
+          _cp.clicks_context must_== (4)
         }
       }
     }

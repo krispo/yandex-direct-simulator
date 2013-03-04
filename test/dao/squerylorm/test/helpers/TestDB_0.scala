@@ -58,12 +58,12 @@ object TestDB_0 extends AppHelpers {
         region_id = region.id,
         //prior is like CTR 
         min = 0.01,
-        max = 0.1,
-        pMin = 0.15,
-        pMax = 0.2,
+        max = 0.2,
+        pMin = 0.3,
+        pMax = 0.4,
         delta = 0.1,
         //cumulative traffic during the day
-        n = 10000).put
+        n = 100000).put
 
     //BannerPhrasePerformance
     val bannerPhrasePerformance = bannerPhrases map {
