@@ -1,7 +1,15 @@
-@(message: String)
+@(isStarted: Boolean = false)
 
-@main("Welcome to Play 2.1") {
-    
-    @play20.welcome(message)
-    
+@import helper._
+
+@main("Simulator") {        
+
+<div align="center">
+	@if(!isStarted){
+		<a href="@routes.Application.startJobs("krisp0")" class="btn primary" style="color: green; border-color: green">Start</a>
+	}else{ 
+	    <a href="@routes.Application.stopJobs("krisp0")" class="btn" style="color: red; border-color: red">Stop</a>
+	}
+</div>
+
 }
