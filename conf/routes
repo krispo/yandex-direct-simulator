@@ -4,8 +4,9 @@
 
 # Home page
 GET     /                           controllers.Application.index
-GET 	/startJobs 					controllers.Application.startJobs(username:String)
-GET 	/stopJobs 					controllers.Application.stopJobs(username:String)
+GET 	/startJobs 					controllers.Application.startJobs
+GET 	/stopJobs 					controllers.Application.stopJobs
+GET 	/clearDB 					controllers.Application.clearDB
 
 POST    /api                        controllers.Yandex.api
 GET     /report/:id            		controllers.Yandex.report(id:Long)

@@ -26,13 +26,28 @@ object Application extends Controller {
     Ok(views.html.index(Scheduler.isStarted & !Scheduler.isInStandbyMode))
   }
 
-  def startJobs(username: String) = Action {
+  def startJobs = Action {
     Scheduler.start
     Ok(views.html.index(Scheduler.isStarted & !Scheduler.isInStandbyMode))
   }
 
-  def stopJobs(username: String) = Action {
+  def stopJobs = Action {
     Scheduler.stop
     Ok(views.html.index(Scheduler.isStarted & !Scheduler.isInStandbyMode))
   }
+
+  /**
+   * clear database function
+   * is used with GET request from web client
+   */
+  def clearDB = Action {
+    if ((new dao.squerylorm.SquerylDao).clearDB) {
+      println("!!! DB is CLEAR !!!")
+      Ok
+    } else{
+      println("??? DB is NOT clear... ???")
+     BadRequest 
+    }      
+  }
+
 }

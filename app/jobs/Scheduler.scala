@@ -53,6 +53,8 @@ object Scheduler {
 class executeBlock extends Job {
   def execute(jec: JobExecutionContext) {
     println("------------------ START Job ------------------")
+    
+    
     println("------------------ END Job ------------------")
   }
 

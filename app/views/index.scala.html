@@ -6,10 +6,16 @@
 
 <div align="center">
 	@if(!isStarted){
-		<a href="@routes.Application.startJobs("krisp0")" class="btn primary" style="color: green; border-color: green">Start</a>
+		<a href="@routes.Application.startJobs" class="btn primary" style="color: green; border-color: green">Start</a>
 	}else{ 
-	    <a href="@routes.Application.stopJobs("krisp0")" class="btn" style="color: red; border-color: red">Stop</a>
+	    <a href="@routes.Application.stopJobs" class="btn" style="color: red; border-color: red">Stop</a>
 	}
 </div>
+
+<p align="center" style="margin-top: 20em;">	
+	@if(!isStarted){
+		<a href="/clearDB" class="btn btn-small">Clear_DB</a>
+	}
+</p>	
 
 }

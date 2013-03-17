@@ -113,6 +113,55 @@ class SquerylDao extends dao.Dao {
       try {
         allCatch opt AppSchema.drop
         allCatch opt AppSchema.create
+
+        val dt_fmt = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd")
+        val date = dt_fmt.parseDateTime("2013-01-01")
+
+        //create user
+        val user = User("krisp0", "111").put
+
+        //create campaigns
+        val campaigns = List(user.campaignsRel.associate(
+          Campaign(user.id, name = "Campaign_1", _login = "krisp0")))
+
+        //BudgetHistory
+        val budgetHistory = campaigns(0).budgetHistoryRel.associate(
+          BudgetHistory(campaign_id = 1, date = date, budget = 10000000))
+
+        //Banner
+        val banners = List(Banner("Banner_1").put)
+
+        //Regions
+        val regions = List(Region(description = "Russia").put)
+
+        //BannerPhrase
+        val bannerPhrases =
+          for (
+            c <- campaigns;
+            b <- banners;
+            r <- regions
+          ) yield {
+            //Phrases
+            val phrases = (1 to 100) map (i => Phrase("Phrase_" + i.toString + "_c" + c.id.toString + "_b" + b.id.toString).put) toList
+
+            phrases.zipWithIndex map {
+              case (ph, i) =>
+                BannerPhrase(
+                  campaign_id = c.id,
+                  banner_id = b.id,
+                  phrase_id = ph.id,
+                  region_id = r.id,
+                  //prior is like CTR 
+                  min = 0.01 * (1 + (i + 1).toDouble / phrases.length),
+                  max = 0.2 * (1 + (i + 1).toDouble / phrases.length),
+                  pMin = 0.3 * (1 + (i + 1).toDouble / phrases.length),
+                  pMax = 0.5 * (1 + (i + 1).toDouble / phrases.length),
+                  delta = 0.1,
+                  //cumulative traffic during the day
+                  n = 100000).put
+            }
+          }
+
         true
       } catch {
         case e => false
