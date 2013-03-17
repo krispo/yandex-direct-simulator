@@ -182,8 +182,6 @@ class APISpec extends Specification with AllExpectations {
           (res \ "startDate").text must_== ("2013-01-01")
           (res \ "endDate").text must_== ("2013-01-01")
 
-          val c = AppSchema.campaigns.toList.head
-
           ((res \ "phrasesDict" \\ "phrase").head \ "@phraseID").text.toLong must_== (1) //(c.bannerPhrases.head.phrase.get.id)
           ((res \ "phrasesDict" \\ "phrase").head \ "@value").text must_== ("Phrase_0") //(c.bannerPhrases.head.phrase.get.phrase)
 
@@ -222,7 +220,7 @@ class APISpec extends Specification with AllExpectations {
         }
       }
     }
-    
+
     "delete last report" in {
 
       TestDB_1.creating_and_filling_inMemoryDB() {
@@ -236,6 +234,40 @@ class APISpec extends Specification with AllExpectations {
           res2 must_== (0)
           AppSchema.reports.toList.length must_== (1)
           AppSchema.reports.toList.head.id must_== (1)
+        }
+      }
+    }
+  }
+
+  /*------------- GetBannersStat ---------------------------------------------------*/
+  "getBannersStat" should {
+    sequential
+
+    "take TRUE data" in {
+
+      TestDB_1.creating_and_filling_inMemoryDB() {
+        inTransaction {
+          val res = API("krisp0", "token_1").getBannersStat(
+            NewReportInfo(
+              CampaignID = 1,
+              StartDate = "2013-01-01",
+              EndDate = "2013-01-01"))
+
+          res.CampaignID must_== (1)
+          res.StartDate must_== ("2013-01-01")
+          res.EndDate must_== ("2013-01-01")
+
+          res.Stat.length must_== (100) //5 banners with 20 phrases in each
+          res.Stat.head.BannerID must_== (1)
+          res.Stat.head.PhraseID must_== (Some(1))
+          res.Stat.head.Phrase must_== ("Phrase_0")
+          res.Stat.head.SumSearch must_== (3660.0)
+          res.Stat.head.SumContext must_== (3660.0)
+          res.Stat.head.ShowsSearch must_== (18300)
+          res.Stat.head.ShowsContext must_== (18300)
+          res.Stat.head.ClicksSearch must_== (1830)
+          res.Stat.head.ClicksContext must_== (1830)
+
         }
       }
     }
