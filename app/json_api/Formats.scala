@@ -9,7 +9,7 @@ import play.api.libs.json._
 
 object Reads { //-------------------------- fromJson ---------------------------------
   import play.api.libs.json.Reads._
-  
+
   implicit lazy val getBannersInfo = Json.reads[GetBannersInfo]
   implicit lazy val getSummaryStatRequest = Json.reads[GetSummaryStatRequest]
   implicit lazy val newReportInfo = Json.reads[NewReportInfo]
@@ -24,4 +24,7 @@ object Writes { //---------------------- toJson --------------------------------
   implicit lazy val bannerInfo = Json.writes[BannerInfo]
   implicit lazy val statItem = Json.writes[StatItem]
   implicit lazy val reportInfo = Json.writes[ReportInfo]
+
+  implicit lazy val bannersStatItem = Json.writes[BannersStatItem]
+  implicit lazy val getBannersStatResponse = Json.writes[GetBannersStatResponse]
 }

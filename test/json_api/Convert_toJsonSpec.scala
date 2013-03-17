@@ -202,4 +202,36 @@ class Convert_toJsonSpec extends Specification with AllExpectations {
       res \\ "StatusReport" map (_.as[String]) must_== (List("Pending", "Done"))
     }
   }
+
+  /*------------- GetBannersStatResponse ---------------------------------------------------*/
+  "toJson - GetBannersStatResponse" should {
+    sequential
+
+    "take TRUE data" in {
+      val date = date_fmt.parse("2013-01-01")
+
+      val bsi = BannersStatItem(
+        BannerID = 11,
+        PhraseID = Some(1),
+        Phrase = "some",
+        Sum = 12.3,
+        Clicks = 50,
+        Shows = 550)
+
+      val data = GetBannersStatResponse(
+        CampaignID = 10,
+        StartDate = "2013-01-01",
+        EndDate = "2013-01-01",
+        Stat = List(bsi, bsi))
+
+      val res = toJson[GetBannersStatResponse](data)
+
+      res \ "CampaignID" must_== (JsNumber(10))
+      res \ "StartDate" must_== (JsString("2013-01-01"))
+      res \ "Stat" \\ "BannerID" must_== (List(JsNumber(11), JsNumber(11)))
+      //res \ "Stat" \\ "PhraseID" must_== (List(JsNumber(1), JsNumber(1)))
+      res \ "Stat" \\ "Phrase" must_== (List(JsString("some"), JsString("some")))
+      res \ "Stat" \\ "Sum" must_== (List(JsNumber(12.3), JsNumber(12.3)))
+    }
+  }
 }
