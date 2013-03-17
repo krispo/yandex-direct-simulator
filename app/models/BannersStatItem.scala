@@ -2,8 +2,8 @@ package models
 
 case class BannersStatItem(
   //val StatDate: DateTime = new DateTime,
-  val BannerID: Int = 0,
-  val PhraseID: Option[Int] = Some(0),
+  val BannerID: Long = 0,
+  val PhraseID: Option[Long] = Some(0),
   //val RubricID: Int = 0,
   val Phrase: String = "",
   val Sum: Double = 0,

@@ -44,6 +44,12 @@ object Yandex extends Controller {
         } getOrElse BadRequest
       }
 
+      case "GetBannersStat" => { //++    BannersPerformance
+        fromJson[NewReportInfo](param) map { s =>
+          Ok(wrap(toJson[GetBannersStatResponse](api.getBannersStat(s)))) as JSON
+        } getOrElse BadRequest
+      }
+      
       case "CreateNewReport" => { //++     BannerPhrasePerformance
         fromJson[NewReportInfo](param) map { s =>
           Ok(wrap(JsNumber(api.createNewReport(s)))) as JSON

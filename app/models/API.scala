@@ -6,10 +6,15 @@ import dao.squerylorm.{ SquerylDao, BannerPhrase }
 
 import scala.xml._
 
+import java.text._
+import org.joda.time.DateTime
+
 case class API(
   val login: String,
   val token: String = "",
   val dao: SquerylDao = new SquerylDao) {
+
+  val date_fmt = new SimpleDateFormat("yyyy-MM-dd")
 
   /**------------ methods --------------**/
 
@@ -27,6 +32,7 @@ case class API(
     }
   }
 
+  //ActualBids and NetAdvisedBids
   def getBanners(par: GetBannersInfo): List[BannerInfo] =
     for {
       c <- par.CampaignIDS map (dao.getCampaign(login, _).get);
@@ -52,11 +58,42 @@ case class API(
         } toList)
     }
 
+  //Campaigns Performance DURING the day
   def getSummaryStat(par: GetSummaryStatRequest): List[StatItem] =
     par.CampaignIDS map { dao.getCampaign(login, _, par.startDate, par.endDate) get } map { c =>
       StatItem._apply(c)
     }
 
+  //Banners Performance DURING the day
+  def getBannersStat(par: NewReportInfo): GetBannersStatResponse =
+    dao.getCampaign(
+      login,
+      par.CampaignID,
+      new DateTime(date_fmt.parse(par.StartDate)),
+      new DateTime(date_fmt.parse(par.EndDate))) map { c =>
+        val bsiL = c.bannerPhrases map { bp =>
+          BannersStatItem(
+            BannerID = bp.banner.get.id,
+            PhraseID = Some(bp.phrase.get.id),
+            Phrase = bp.phrase.get.phrase,
+            Sum = bp.performance.cost_search + bp.performance.cost_context,
+            SumSearch = bp.performance.cost_search,
+            SumContext = bp.performance.cost_context,
+            Clicks = bp.performance.clicks_search + bp.performance.clicks_context,
+            ClicksSearch = bp.performance.clicks_search,
+            ClicksContext = bp.performance.clicks_context,
+            Shows = bp.performance.impress_search + bp.performance.impress_context,
+            ShowsSearch = bp.performance.impress_search,
+            ShowsContext = bp.performance.impress_context)
+        }
+        GetBannersStatResponse(
+          CampaignID = par.CampaignID,
+          StartDate = par.StartDate,
+          EndDate = par.EndDate,
+          Stat = bsiL)
+      } get
+
+      //Create new detailed XML report
   def createNewReport(par: NewReportInfo): Long = {
 
     val content = par.toXML //save to DB the NewReportInfo      
@@ -67,6 +104,7 @@ case class API(
     } getOrElse 0
   }
 
+      //Get Url for XML report
   def getReportList: List[ReportInfo] = {
     val conf = play.api.Play.current.configuration
 
@@ -78,10 +116,8 @@ case class API(
 
   }
 
+  //Get XML Report for bannerPhrases at the END of the day
   def getXml(reportId: Long): Elem = {
-    import java.text._
-    import org.joda.time.DateTime
-    val date_fmt = new SimpleDateFormat("yyyy-MM-dd")
 
     val report = dao.getXmlReport(reportId)
     val xml_nri = XML.loadString(report.content)
@@ -119,6 +155,7 @@ case class API(
 
   def deleteReport(par: Int): Int = dao.deleteXmlReport(par)
 
+  //Set new bids
   def updatePrices(par: List[PhrasePriceInfo]): Boolean = {
     import org.joda.time.DateTime
     val dt = DateTime.now()
