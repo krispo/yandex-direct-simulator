@@ -114,9 +114,6 @@ class SquerylDao extends dao.Dao {
         allCatch opt AppSchema.drop
         allCatch opt AppSchema.create
 
-        val dt_fmt = org.joda.time.format.DateTimeFormat.forPattern("yyyy-MM-dd")
-        val date = dt_fmt.parseDateTime("2013-01-01")
-
         //create user
         val user = User("krisp0", "111").put
 
@@ -126,7 +123,7 @@ class SquerylDao extends dao.Dao {
 
         //BudgetHistory
         val budgetHistory = campaigns(0).budgetHistoryRel.associate(
-          BudgetHistory(campaign_id = 1, date = date, budget = 10000000))
+          BudgetHistory(campaign_id = 1, budget = 10000000))
 
         //Banner
         val banners = List(Banner("Banner_1").put)
