@@ -69,7 +69,7 @@ class executeBlock extends Job {
 
     c.bannerPhrases map { bp =>
       val nab = dao.generateNetAdvisedBids(bp, mu, sigma, time)
-      dao.updatePrices(bp.id, nab.d, time)
+      dao.updatePrices(bp.id, nab.c, time)
     }
 
     //generate BannerPhrasePerformance
