@@ -5,6 +5,10 @@ import models._
 import org.quartz._
 import org.quartz.impl.StdSchedulerFactory
 
+import dao.squerylorm.SquerylDao
+import domain.PositionValue
+import org.joda.time._
+
 object Scheduler {
 
   val scheduler = StdSchedulerFactory.getDefaultScheduler()
@@ -27,7 +31,7 @@ object Scheduler {
       .startNow()
       .withSchedule(
         SimpleScheduleBuilder.simpleSchedule()
-          .withIntervalInSeconds(1)
+          .withIntervalInSeconds(5)
           .repeatForever())
       .build()
 
@@ -53,8 +57,35 @@ object Scheduler {
 class executeBlock extends Job {
   def execute(jec: JobExecutionContext) {
     println("------------------ START Job ------------------")
-    
-    
+
+    val dao = new SquerylDao
+    val time = new DateTime(jec.getFireTime())
+
+    //generate NetAdvisedBids
+    var c = dao.getCampaign("krisp0", 1).get
+    var bp = c.bannerPhrases.head
+
+    val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
+    val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
+
+    val nab = dao.generateNetAdvisedBids(bp, mu, sigma, time)
+
+    dao.updatePrices(bp.id, nab.d, time)
+  
+    //generate BannerPhrasePerformance
+    c = dao.getCampaign("krisp0", 1).get
+    bp = c.bannerPhrases.head
+    dao.generateBannerPhrasePerformance(bp, time)
+ /* 
+    //generate CampaignPerformance
+    c = dao.getCampaign("krisp0", 1).get
+    bp = c.bannerPhrases.head
+    dao.generateCampaignPerformance(c, time)
+
+    //generate Budget
+    c = dao.getCampaign("krisp0", 1).get
+    dao.generateBudget(c, time)
+*/
     println("------------------ END Job ------------------")
   }
 
