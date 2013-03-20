@@ -63,29 +63,29 @@ class executeBlock extends Job {
 
     //generate NetAdvisedBids
     var c = dao.getCampaign("krisp0", 1).get
-    var bp = c.bannerPhrases.head
 
     val mu = PositionValue(0.01, 2.00, 2.50, 3.00, 0.20)
     val sigma = PositionValue(0.001, 0.1, 0.1, 0.1)
 
-    val nab = dao.generateNetAdvisedBids(bp, mu, sigma, time)
+    c.bannerPhrases map { bp =>
+      val nab = dao.generateNetAdvisedBids(bp, mu, sigma, time)
+      dao.updatePrices(bp.id, nab.d, time)
+    }
 
-    dao.updatePrices(bp.id, nab.d, time)
-  
     //generate BannerPhrasePerformance
     c = dao.getCampaign("krisp0", 1).get
-    bp = c.bannerPhrases.head
-    dao.generateBannerPhrasePerformance(bp, time)
- /* 
+    c.bannerPhrases map { bp =>
+      dao.generateBannerPhrasePerformance(bp, time)
+    }
+
     //generate CampaignPerformance
     c = dao.getCampaign("krisp0", 1).get
-    bp = c.bannerPhrases.head
     dao.generateCampaignPerformance(c, time)
 
     //generate Budget
     c = dao.getCampaign("krisp0", 1).get
     dao.generateBudget(c, time)
-*/
+
     println("------------------ END Job ------------------")
   }
 
