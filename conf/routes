@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+GET     /charts                     controllers.Application.charts
 GET 	/startJobs 					controllers.Application.startJobs
 GET 	/stopJobs 					controllers.Application.stopJobs
 GET 	/clearDB 					controllers.Application.clearDB

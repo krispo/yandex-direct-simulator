@@ -119,11 +119,11 @@ class SquerylDao extends dao.Dao {
 
         //create campaigns
         val campaigns = List(user.campaignsRel.associate(
-          Campaign(user.id, name = "Campaign_1", _login = "krisp0")))
+          Campaign(user.id, name = "Campaign_1", start = new DateTime(), _login = "krisp0")))
 
         //BudgetHistory
         val budgetHistory = campaigns(0).budgetHistoryRel.associate(
-          BudgetHistory(campaign_id = 1, budget = 10000000))
+          BudgetHistory(campaign_id = 1, date = campaigns.head.startDate, budget = 10000000))
 
         //Banner
         val banners = List(Banner("Banner_1").put)

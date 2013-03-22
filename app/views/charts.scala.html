@@ -1,0 +1,53 @@
+@(b: List[(Long,Double)]) 
+
+@main(title = "Charts", nav = "charts") {
+
+<div id="chart_div" style="width: 100%; height: 400px;"></div>
+
+<script type="text/javascript">
+	google.load("visualization", "1", { packages : [ "corechart", "annotatedtimeline" ] });
+	google.setOnLoadCallback(drawChart);
+	function drawChart() {	
+		//var ar_dt = [ @b.map(_._1).mkString(",") ];
+		var ar = [['Year','Budget']];
+		@for(dtb <- b) {
+	    	ar.push([(new Date(@dtb._1)).toString('h:mm:ss'),@dtb._2]);
+		};		
+		var data = google.visualization.arrayToDataTable(ar);
+		
+		var options = {
+			title : 'Budget history'
+		};
+
+		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		chart.draw(data, options);
+	}
+</script>
+} 
+
+
+@***
+
+for(var i=0;i<@c.get.budgetHistory.length;i++){
+			ar[i]=new Array(
+					'@c.get.budgetHistory.map(_.date).head.toString',
+					500);
+		}; 
+
+
+<div id="container" style="width: 100%; height: 400px;">qweqewqe</div>
+
+$(document).ready(function() { 
+var chart1 = new Highcharts.Chart({
+	chart: { renderTo: 'container', type: 'bar' }, 
+	title: { text: 'Fruit Consumption' }, 
+	xAxis: { categories: ['Apples', 'Bananas', 'Oranges'] },
+	yAxis: { title: { text: 'Fruit eaten' } }, 
+	series: [
+		{ name: 'Jane',	data: [1, 0, 4] }, 
+		{ name: 'John', data: [5, 7, 3] }
+		] 
+	}); 
+}); 
+
+*@

@@ -31,7 +31,7 @@ object Scheduler {
       .startNow()
       .withSchedule(
         SimpleScheduleBuilder.simpleSchedule()
-          .withIntervalInSeconds(5)
+          .withIntervalInSeconds(1)
           .repeatForever())
       .build()
 

@@ -1,12 +1,12 @@
 package controllers
 
 import jobs._
-
 import play.api._
 import play.api.mvc._
-
 import play.api.data._
 import play.api.data.Forms._
+import dao.squerylorm.SquerylDao
+import org.joda.time._
 
 case class Prior(
   val min: Double,
@@ -24,6 +24,15 @@ object Application extends Controller {
 
   def index = Action {
     Ok(views.html.index(Scheduler.isStarted & !Scheduler.isInStandbyMode))
+  }
+
+  def charts = Action {
+    val dao = new SquerylDao
+
+    val c = dao.getCampaign("krisp0", 1)
+    val b = c.get.budgetHistory map (bh => (new DateTime(bh.date).getMillis(), bh.budget))
+ 
+    Ok(views.html.charts(b.reverse.tail)) //exclude first case
   }
 
   def startJobs = Action {
@@ -44,10 +53,10 @@ object Application extends Controller {
     if ((new dao.squerylorm.SquerylDao).clearDB) {
       println("!!! DB is CLEAR !!!")
       Ok
-    } else{
+    } else {
       println("??? DB is NOT clear... ???")
-     BadRequest 
-    }      
+      BadRequest
+    }
   }
 
 }
