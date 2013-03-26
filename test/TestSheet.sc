@@ -18,9 +18,9 @@ object TestSheet {
 
   //import org.apache.commons.math3.random.RandomGenerator
   val r = new RandomDataImpl()                    //> r  : org.apache.commons.math3.random.RandomDataImpl = org.apache.commons.mat
-                                                  //| h3.random.RandomDataImpl@3003ad53
+                                                  //| h3.random.RandomDataImpl@4add5f6d
 
-  1 to 5 map (i => r.nextBinomial(10, 0.3))       //> res4: scala.collection.immutable.IndexedSeq[Int] = Vector(2, 5, 5, 4, 1)
+  1 to 5 map (i => r.nextBinomial(10, 0.3))       //> res4: scala.collection.immutable.IndexedSeq[Int] = Vector(3, 3, 3, 1, 4)
 
   val list: List[Int] = List() //List(3, 2, 4, 1) //> list  : List[Int] = List()
   list.sum                                        //> res5: Int = 0
@@ -30,4 +30,8 @@ object TestSheet {
   if ("qwerty,we.23..sd;[-=340Pw'df df -- fsdf-----we    kjdgdf" == st) 1 else 0
                                                   //> res6: Int = 1
 
+  val li = List(2, 3, 3, 4, 1, 5)                 //> li  : List[Int] = List(2, 3, 3, 4, 1, 5)
+  li.scan(0)(_ + _).tail                          //> res7: List[Int] = List(2, 5, 8, 12, 13, 18)
+  val ld = List(1.1, 3.4, 3.2, 2.1)               //> ld  : List[Double] = List(1.1, 3.4, 3.2, 2.1)
+  ld.scan(0.0)(_ + _).tail                        //> res8: List[Double] = List(1.1, 4.5, 7.7, 9.8)
 }
