@@ -5,82 +5,59 @@
 
 @main(title = "Charts", nav = "charts") {
 
-<!-- <table>
-	<tr>
-		<th id="chart_div" style="height: 100%;"></th>
-		<th id="chart_div2" style="height: 100%;"></th>							
-	</tr>
-	<tr>
-		<th id="chart_div3" style="height: 100%;"></th>
-		<th id="chart_div4" style="height: 100%;"></th>							
-	</tr>
-</table> -->
+<style type="text/css">  
+	.chartDiv {  
+    	width: 80%;  
+        height: 300px;  
+   	} 
+   	.controlDiv {  
+    	width: 80%;  
+        height: 300px;  
+   	}  
+</style>
+    
+<script type="text/javascript">  
+        function create_dashboardDiv(id) { 
+            var div = document.createElement("div");  
+            div.id = "dashboard_"+id;  
+            div.setAttribute("align", "center");  
+            div.style.margin = "0px auto";              
 
-<div id="chart_div" style="width: 50%; height: 200pt;"></div>
+            div.appendChild(create_chartDiv(id));
+            div.appendChild(create_controlDiv(id));
 
-<div id="dashboard">
-      <!--Divs that will hold each control and chart-->
-      <div id="chart" style="width: 50%; height: 200pt;"></div>
-      <div id="control" style="width: 50%; height: 200pt;"></div>
-    </div>
+            document.body.appendChild(div); 
+        }         
+        function create_chartDiv(id) {         
+            var div = document.createElement("div");  
+            div.id = "chart_"+id;   
+            div.className = "chartDiv";
+            return div
+        } 
+        function create_controlDiv(id) {
 
-
-<script type="text/javascript">
-	google.load('visualization', '1', { packages : [ 'corechart' ] });
-	google.setOnLoadCallback(drawChart);	
-	
-	function drawChart() {	
-		
-		
-		var data = new google.visualization.DataTable();
-		data.addColumn('datetime', 'Date');
-        data.addColumn('number', 'Budget');
-        var ar = [];
-        
-        @for(dtb <- getBudget(c)) {
-		  	ar.push([new Date(@dtb._1),@dtb._2]);
-		};           
-            
-		data.addRows(ar);
-		
-		var options = {
-			title : 'Budget history',
-			hAxis: {
-				format: 'HH:mm:ss EEE',
-				title: 'Time',
-				interpolateNulls: false
-			},
-			vAxis: {
-				title: 'Budget balance, $'
-			},
-			pointSize: 5	
-		};
-
-		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-		chart.draw(data, options);
-		
-		/* var chart = new google.visualization.LineChart(document.getElementById('chart_div2'));
-		chart.draw(data, options);
-		
-		var chart = new google.visualization.LineChart(document.getElementById('chart_div3'));
-		chart.draw(data, options);
-		
-		var chart = new google.visualization.LineChart(document.getElementById('chart_div4'));
-		chart.draw(data, options); */
-	}
-</script>
+            var div = document.createElement("div");  
+            div.id = "control_"+id;  
+            div.className = "controlDiv";
+        	return div
+        } 
+</script>  
 
 <script type="text/javascript">
  	google.load('visualization', '1', { packages : [ 'controls' ] });
 	google.setOnLoadCallback(drawVisualization);
-	
-	function drawVisualization() {
+
+	function drawVisualization(id) {
+		var id = 1;
+		
+		create_dashboardDiv(id);	
+		
 		var dashboard = new google.visualization.Dashboard(
-			document.getElementById('dashboard'));
+			document.getElementById('dashboard_'+id));
 
 		var control = new google.visualization.ControlWrapper({
 			'controlType': 'ChartRangeFilter',
-		    'containerId': 'control',
+		    'containerId': 'control_'+id,
 		    'options': {
 		    	// Filter by the date axis.
 		    	'filterColumnIndex': 0,
@@ -106,7 +83,7 @@
 
 		var chart = new google.visualization.ChartWrapper({
 		  	'chartType': 'LineChart',
-		   	'containerId': 'chart',
+		   	'containerId': 'chart_'+id,
 		    'options': {
 			    // Use the same chart area width as the control for axis alignment.
 		    	'title' : 'Budget history',
@@ -145,6 +122,56 @@
 
 
 @***
+<div>
+	<button onclick="create_dashboardDiv('qwe')">Touch me...</button>
+</div>
+<div align="center" id="dashboard_1">
+      <!--Divs that will hold each control and chart-->
+      <div id="chart_1" style="width: 80%; height: 300px;"></div>
+      <div id="control_1" style="width: 80%; height: 300px;"></div>
+</div>
+       
+<div align="center">
+	<p id="chart_div" style="width: 80%; height: 300px;"></p>
+</div>
+
+<script type="text/javascript">
+	google.load('visualization', '1', { packages : [ 'corechart' ] });
+	google.setOnLoadCallback(drawChart);	
+	
+	function drawChart() {			
+		var data = new google.visualization.DataTable();
+		data.addColumn('datetime', 'Date');
+        data.addColumn('number', 'Budget');
+        var ar = [];
+        
+        @for(dtb <- getBudget(c)) {
+		  	ar.push([new Date(@dtb._1),@dtb._2]);
+		};           
+            
+		data.addRows(ar);
+		
+		var options = {
+			title : 'Budget history',
+			hAxis: {
+				format: 'HH:mm:ss EEE',
+				title: 'Time',
+				interpolateNulls: false
+			},
+			vAxis: {
+				title: 'Budget balance, $'
+			},
+			pointSize: 5	
+		};
+
+		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
+		chart.draw(data, options);
+	}
+</script>
+
+
+
+
 for(var i=0;i<@c.get.budgetHistory.length;i++){
 			ar[i]=new Array(
 					'@c.get.budgetHistory.map(_.date).head.toString',
