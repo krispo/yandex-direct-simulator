@@ -31,8 +31,9 @@ object Application extends Controller {
 
     val c = dao.getCampaign("krisp0", 1)
     val b = c.get.budgetHistory map (bh => (new DateTime(bh.date).getMillis(), bh.budget))
- 
-    Ok(views.html.charts(b.reverse.tail)) //exclude first case
+       
+    val nab = c.get.bannerPhrases map (bp=>bp.netAdvisedBidsHistory)
+    Ok(views.html.charts(c))//b.reverse.tail)) //exclude first case
   }
 
   def startJobs = Action {

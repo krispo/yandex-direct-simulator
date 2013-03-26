@@ -1,4 +1,7 @@
-@(b: List[(Long,Double)]) 
+@(c: Option[dao.squerylorm.Campaign]) 
+
+@import org.joda.time.DateTime
+@import dao.squerylorm.Charts._
 
 @main(title = "Charts", nav = "charts") {
 
@@ -23,26 +26,21 @@
 
 
 <script type="text/javascript">
-	google.load('visualization', '1', { packages : [ 'corechart', 'controls' ] });
+	google.load('visualization', '1', { packages : [ 'corechart' ] });
 	google.setOnLoadCallback(drawChart);	
 	
 	function drawChart() {	
-		//var ar_dt = [ @b.map(_._1).mkString(",") ];
-		//var ar = [['Date','Budget']];
-		//@for(dtb <- b) {
-	    //	ar.push([new Date(@dtb._1).format("HH:MM:ss ddd"),@dtb._2]);
-		//};		
-		//var data = google.visualization.arrayToDataTable(ar);
+		
 		
 		var data = new google.visualization.DataTable();
 		data.addColumn('datetime', 'Date');
         data.addColumn('number', 'Budget');
         var ar = [];
         
-        @for(dtb <- b) {
-	    	ar.push([new Date(@dtb._1),@dtb._2]);
-		};
-
+        @for(dtb <- getBudget(c)) {
+		  	ar.push([new Date(@dtb._1),@dtb._2]);
+		};           
+            
 		data.addRows(ar);
 		
 		var options = {
@@ -72,9 +70,8 @@
 	}
 </script>
 
-
 <script type="text/javascript">
-	google.load('visualization', '1', { packages : [ 'controls' ] });
+ 	google.load('visualization', '1', { packages : [ 'controls' ] });
 	google.setOnLoadCallback(drawVisualization);
 	
 	function drawVisualization() {
@@ -104,7 +101,7 @@
 		  		}
 		    },
 		     // Initial range: 2012-02-09 to 2012-03-20.
-			'state': {'range': {'start': new Date(@b.head._1), 'end': new Date(@b.last._1)}}
+			'state': {'range': {'start': new Date(@getBudget(c).head._1), 'end': new Date(@getBudget(c).last._1)}}
 		});
 
 		var chart = new google.visualization.ChartWrapper({
@@ -132,7 +129,7 @@
 	    data.addColumn('number', 'Budget');
 	    var ar = [];
 	        
-	    @for(dtb <- b) {
+	    @for(dtb <- getBudget(c)) {
 		  	ar.push([new Date(@dtb._1),@dtb._2]);
 		};
 
@@ -140,13 +137,14 @@
 			
 		dashboard.bind(control, chart);
 		dashboard.draw(data);
-	}
+	} 
 </script>
+
+
 } 
 
 
 @***
-
 for(var i=0;i<@c.get.budgetHistory.length;i++){
 			ar[i]=new Array(
 					'@c.get.budgetHistory.map(_.date).head.toString',
