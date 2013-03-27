@@ -32,6 +32,28 @@ object Charts {
     } getOrElse (Nil)
   }
 
+  //ActualBids and NetAdvisedBids evolution in time
+  def getPositionPrices(oc: Option[Campaign], bpID: Long): List[(Long, Double, Double, Double, Double, Double)] = { //time,min,max,pmin,pmax,price
+    oc map { c =>
+      val obp = BannerPhrase.select(c, bpID)
+      obp map { bp =>
+        val ab = bp.actualBidHistory.reverse
+        val nab = bp.netAdvisedBidsHistory.reverse
+
+        val pp = ab.map(_.date).zipWithIndex
+        pp map {
+          case (dt, i) =>
+            (dt.getMillis(), //DateTime
+              nab(i).a, //min
+              nab(i).b, //max
+              nab(i).c, //pmin
+              nab(i).d, //pmax
+              ab(i).bid) //actual price
+        }
+      } getOrElse (Nil)
+    } getOrElse (Nil)
+  }
+
   //CTR function
   def ctr(cl: Int, sh: Int): Double = {
     if (sh != 0)

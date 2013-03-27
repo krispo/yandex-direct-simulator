@@ -35,10 +35,10 @@
             return div
         } 
         function create_controlDiv(id) {
-
             var div = document.createElement("div");  
             div.id = "control_"+id;  
             div.className = "controlDiv";
+            div.hidden = true; //for faster loading the charts we hide controls
         	return div
         } 
 </script>  
@@ -77,9 +77,7 @@
 		         	// 1 day in milliseconds = 24 * 60 * 60 * 1000 = 86,400,000
 		         	'minRangeSize': 86400000
 		  		}
-		    },
-		     // Initial range: 2012-02-09 to 2012-03-20.
-			'state': {'range': {'start': new Date(@getCampaignCTR(c).head._1), 'end': new Date(@getCampaignCTR(c).last._1)}}
+		    }
 		});
 
 		var chart = new google.visualization.ChartWrapper({
@@ -123,6 +121,85 @@
 </script>
 
 
+<!-- Position Prices ------------------------------------------------------>
+<script type="text/javascript">
+ 	google.load('visualization', '1', { packages : [ 'controls' ] });
+	google.setOnLoadCallback(drawVisualization);
+
+	function drawVisualization() {
+	@for(bp <- c.get.bannerPhrases){
+		var uid = 'bpPP_'+@bp.id;
+		create_dashboardDiv(uid);	
+
+		var dashboard = new google.visualization.Dashboard(
+			document.getElementById('dashboard_'+uid));
+
+		var control = new google.visualization.ControlWrapper({
+			'controlType': 'ChartRangeFilter',
+		    'containerId': 'control_'+uid,
+		    'options': {
+		    	// Filter by the date axis.
+		    	'filterColumnIndex': 0,
+		       	'ui': {
+		         	'chartType': 'LineChart',
+		         	'chartOptions': {
+		           		//'chartArea': {'height': '20%','width': '90%'},
+						'chartArea': {'width': '70%'},
+		           		'hAxis': {'baselineColor': 'none'}
+		         	},
+		         	// Display a single series that shows the closing value of the stock.
+		         	// Thus, this view has two columns: the date (axis) and the stock value (line series).
+		         	'chartView': {
+		           		'columns': [0, 5]
+		         	},
+		         	// 1 day in milliseconds = 24 * 60 * 60 * 1000 = 86,400,000
+		         	'minRangeSize': 86400000
+		  		}
+		    }
+		});
+
+		var chart = new google.visualization.ChartWrapper({
+		  	'chartType': 'LineChart',
+		   	'containerId': 'chart_'+uid,
+		    'options': {
+			    // Use the same chart area width as the control for axis alignment.
+		    	'title' : 'Campaign Performance CTR',
+				'hAxis': {
+					'format': 'HH:mm:ss EEE',
+					'title': 'Time'
+				},
+				'vAxis': {
+					'title': 'CTR'
+				},
+				'pointSize': 5
+			    //'hAxis': {'slantedText': false},
+			    //'vAxis': {'viewWindow': {'min': 0, 'max': 2000}},
+			    //'legend': {'position': 'none'}
+			}
+		});
+
+		var data = new google.visualization.DataTable();
+		data.addColumn('datetime', 'Date');
+	    data.addColumn('number', 'Min');
+	    data.addColumn('number', 'Max');
+	    data.addColumn('number', 'Premium Min');
+	    data.addColumn('number', 'Premium Max');
+	    data.addColumn('number', 'Actual Price');
+	    var ar = [];
+	    
+	    @for(pp <- getPositionPrices(c,bp.id)) {
+		  	ar.push([new Date(@pp._1), @pp._2, @pp._3, @pp._4, @pp._5, @pp._6]);
+		};
+	    
+		data.addRows(ar);			
+			
+		dashboard.bind(control, chart);
+		dashboard.draw(data);
+	
+	} 	
+	} 
+</script>
+
 
 <!-- Budget --------------------------------------------------------------------->
 <script type="text/javascript">
@@ -159,9 +236,7 @@
 		         	// 1 day in milliseconds = 24 * 60 * 60 * 1000 = 86,400,000
 		         	'minRangeSize': 86400000
 		  		}
-		    },
-		     // Initial range: 2012-02-09 to 2012-03-20.
-			'state': {'range': {'start': new Date(@getBudget(c).head._1), 'end': new Date(@getBudget(c).last._1)}}
+		    }
 		});
 
 		var chart = new google.visualization.ChartWrapper({
@@ -206,6 +281,22 @@
 
 
 @***
+
+<div>
+	<button onclick="$('#control_cpCTR_1').toggle()">cpCTR</button>
+</div>
+
+// Initial range: 2012-02-09 to 2012-03-20.
+'state': {'range': {'start': new Date(@getCampaignCTR(c).head._1), 'end': new Date(@getCampaignCTR(c).last._1)}}
+		
+
+// Initial range: 2012-02-09 to 2012-03-20.
+'state': {'range': {'start': new Date(@getPositionPrices(c,bp.id).head._1), 'end': new Date(@getPositionPrices(c,bp.id).last._1)}}
+
+// Initial range: 2012-02-09 to 2012-03-20.
+'state': {'range': {'start': new Date(@getBudget(c).head._1), 'end': new Date(@getBudget(c).last._1)}}		
+
+
 <div>
 	<button onclick="create_dashboardDiv('qwe')">Touch me...</button>
 </div>
