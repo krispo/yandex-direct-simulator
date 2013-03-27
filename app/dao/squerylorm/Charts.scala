@@ -32,6 +32,32 @@ object Charts {
     } getOrElse (Nil)
   }
 
+  //BannerPhrase CTR evolution in time with cumulative clicks and shows
+  def getBannerPhraseCTR(oc: Option[Campaign], bpID: Long): List[(Long, Double, Double, Double)] = {
+    oc map { c =>
+      val obp = BannerPhrase.select(c, bpID)
+
+      obp map { bp =>
+        val bpp = bp.performanceHistory.reverse
+        val cClicksContext = bpp.map(_.clicks_context).scan(0)(_ + _).tail
+        val cClicksSearch = bpp.map(_.clicks_search).scan(0)(_ + _).tail
+        val cShowsContext = bpp.map(_.impress_context).scan(0)(_ + _).tail
+        val cShowsSearch = bpp.map(_.impress_search).scan(0)(_ + _).tail
+
+        val p = bpp.map(_.date).zipWithIndex
+
+        p map {
+          case (dt, i) =>
+            (dt.getMillis(), //DateTime
+              ctr(cClicksSearch(i), cShowsSearch(i)), //CTR search
+              ctr(cClicksContext(i), cShowsContext(i)), //CTR context
+              ctr(cClicksSearch(i) + cClicksContext(i), cShowsSearch(i) + cShowsContext(i)) //CTR SUM
+              )
+        }
+      } getOrElse (Nil)
+    } getOrElse (Nil)
+  }
+
   //ActualBids and NetAdvisedBids evolution in time
   def getPositionPrices(oc: Option[Campaign], bpID: Long): List[(Long, Double, Double, Double, Double, Double)] = { //time,min,max,pmin,pmax,price
     oc map { c =>

@@ -258,7 +258,7 @@
 		   	'containerId': 'chart_'+uid,
 		    'options': {
 			    // Use the same chart area width as the control for axis alignment.
-		    	'title' : 'Campaign Performance CTR',
+		    	'title' : 'ActualBids and NetAdvisedBids, bp_id = ' + @bp.id,
 				'hAxis': {
 					'format': 'HH:mm:ss EEE',
 					'title': 'Time'
@@ -298,101 +298,88 @@
 				</div>
 @** bpCTR *********************************************************************************************@
 				<div class="tab-pane active" id="bpCTR">
+		
+<!-- BannerPhrasePerformance CTR ------------------------------------------------------>
+<script type="text/javascript">
+ 	google.load('visualization', '1', { packages : [ 'controls' ] });
+	google.setOnLoadCallback(drawVisualization);
+
+	function drawVisualization() {
+
+	@for(bp <- c.get.bannerPhrases){
+		var uid = 'bppCTR_'+@bp.id;
+		
+		$('#bpCTR').append(create_dashboardDiv(uid));	
+
+		var dashboard = new google.visualization.Dashboard(
+			document.getElementById('dashboard_'+uid));
+
+		var control = new google.visualization.ControlWrapper({
+			'controlType': 'ChartRangeFilter',
+		    'containerId': 'control_'+uid,
+		    'options': {
+		    	// Filter by the date axis.
+		    	'filterColumnIndex': 0,
+		       	'ui': {
+		         	'chartType': 'LineChart',
+		         	'chartOptions': {
+		           		//'chartArea': {'height': '20%','width': '90%'},
+						'chartArea': {'width': '70%'},
+		           		'hAxis': {'baselineColor': 'none'}
+		         	},
+		         	// Display a single series that shows the closing value of the stock.
+		         	// Thus, this view has two columns: the date (axis) and the stock value (line series).
+		         	'chartView': {
+		           		'columns': [0, 1]
+		         	},
+		         	// 1 day in milliseconds = 24 * 60 * 60 * 1000 = 86,400,000
+		         	'minRangeSize': 86400000
+		  		}
+		    }
+		});
+
+		var chart = new google.visualization.ChartWrapper({
+		  	'chartType': 'LineChart',
+		   	'containerId': 'chart_'+uid,
+		    'options': {
+			    // Use the same chart area width as the control for axis alignment.
+		    	'title' : 'BannerPhrase CTR, id = ' + @bp.id,
+				'hAxis': {
+					'format': 'HH:mm:ss EEE',
+					'title': 'Time'
+				},
+				'vAxis': {
+					'title': 'CTR'
+				},
+				'pointSize': 5
+			    //'hAxis': {'slantedText': false},
+			    //'vAxis': {'viewWindow': {'min': 0, 'max': 2000}},
+			    //'legend': {'position': 'none'}
+			}
+		});
+
+		var data = new google.visualization.DataTable();
+		data.addColumn('datetime', 'Date');
+	    data.addColumn('number', 'CTR search');
+	    data.addColumn('number', 'CTR context');
+	    data.addColumn('number', 'CTR SUM');
+	    var ar = [];
+	    
+	    @for(ctr <- getBannerPhraseCTR(c,bp.id)) {
+		  	ar.push([new Date(@ctr._1), @ctr._2, @ctr._3, @ctr._4]);
+		};
+	    
+		data.addRows(ar);			
+			
+		dashboard.bind(control, chart);
+		dashboard.draw(data);
+	
+	} 	
+	} 
+</script>
 					
 				</div>
 @***********************************************************************************************@
 			</div>
 </div>
 } 
-
-
-@***
-
-<div>
-	<button onclick="$('#control_cpCTR_1').toggle()">cpCTR</button>
-</div>
-
-// Initial range: 2012-02-09 to 2012-03-20.
-'state': {'range': {'start': new Date(@getCampaignCTR(c).head._1), 'end': new Date(@getCampaignCTR(c).last._1)}}
-		
-
-// Initial range: 2012-02-09 to 2012-03-20.
-'state': {'range': {'start': new Date(@getPositionPrices(c,bp.id).head._1), 'end': new Date(@getPositionPrices(c,bp.id).last._1)}}
-
-// Initial range: 2012-02-09 to 2012-03-20.
-'state': {'range': {'start': new Date(@getBudget(c).head._1), 'end': new Date(@getBudget(c).last._1)}}		
-
-
-<div>
-	<button onclick="create_dashboardDiv('qwe')">Touch me...</button>
-</div>
-<div align="center" id="dashboard_1">
-      <!--Divs that will hold each control and chart-->
-      <div id="chart_1" style="width: 80%; height: 300px;"></div>
-      <div id="control_1" style="width: 80%; height: 300px;"></div>
-</div>
-       
-<div align="center">
-	<p id="chart_div" style="width: 80%; height: 300px;"></p>
-</div>
-
-<script type="text/javascript">
-	google.load('visualization', '1', { packages : [ 'corechart' ] });
-	google.setOnLoadCallback(drawChart);	
-	
-	function drawChart() {			
-		var data = new google.visualization.DataTable();
-		data.addColumn('datetime', 'Date');
-        data.addColumn('number', 'Budget');
-        var ar = [];
-        
-        @for(dtb <- getBudget(c)) {
-		  	ar.push([new Date(@dtb._1),@dtb._2]);
-		};           
-            
-		data.addRows(ar);
-		
-		var options = {
-			title : 'Budget history',
-			hAxis: {
-				format: 'HH:mm:ss EEE',
-				title: 'Time',
-				interpolateNulls: false
-			},
-			vAxis: {
-				title: 'Budget balance, $'
-			},
-			pointSize: 5	
-		};
-
-		var chart = new google.visualization.LineChart(document.getElementById('chart_div'));
-		chart.draw(data, options);
-	}
-</script>
-
-
-
-
-for(var i=0;i<@c.get.budgetHistory.length;i++){
-			ar[i]=new Array(
-					'@c.get.budgetHistory.map(_.date).head.toString',
-					500);
-		}; 
-
-
-<div id="container" style="width: 100%; height: 400px;">qweqewqe</div>
-
-$(document).ready(function() { 
-var chart1 = new Highcharts.Chart({
-	chart: { renderTo: 'container', type: 'bar' }, 
-	title: { text: 'Fruit Consumption' }, 
-	xAxis: { categories: ['Apples', 'Bananas', 'Oranges'] },
-	yAxis: { title: { text: 'Fruit eaten' } }, 
-	series: [
-		{ name: 'Jane',	data: [1, 0, 4] }, 
-		{ name: 'John', data: [5, 7, 3] }
-		] 
-	}); 
-}); 
-
-*@
