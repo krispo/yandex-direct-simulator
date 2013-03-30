@@ -139,7 +139,7 @@ class SquerylDao extends dao.Dao {
             r <- regions
           ) yield {
             //Phrases
-            val phrases = (1 to 100) map (i => Phrase("Phrase_" + i.toString + "_c" + c.id.toString + "_b" + b.id.toString).put) toList
+            val phrases = (1 to 200) map (i => Phrase("Phrase_" + i.toString + "_c" + c.id.toString + "_b" + b.id.toString).put) toList
 
             phrases.zipWithIndex map {
               case (ph, i) =>

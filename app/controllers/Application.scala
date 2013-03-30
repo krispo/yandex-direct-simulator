@@ -30,9 +30,7 @@ object Application extends Controller {
     val dao = new SquerylDao
 
     val c = dao.getCampaign("krisp0", 1)
-    val b = c.get.budgetHistory map (bh => (new DateTime(bh.date).getMillis(), bh.budget))
-       
-    val nab = c.get.bannerPhrases map (bp=>bp.netAdvisedBidsHistory)
+   
     Ok(views.html.charts(c))//b.reverse.tail)) //exclude first case
   }
 
