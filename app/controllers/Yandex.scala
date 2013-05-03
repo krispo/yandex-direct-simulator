@@ -28,6 +28,8 @@ object Yandex extends Controller {
     method match { //+
       case "PingAPI" => Ok(wrap(JsNumber(1))) as JSON
 
+      case "GetClientInfo" => Ok { wrap(toJson[List[ClientInfo]](api.getClientInfo)) } as JSON
+
       case "GetCampaignsList" => { //++ 
         Ok(wrap(toJson[List[ShortCampaignInfo]](api.getCampaignsList))) as JSON
       }
@@ -49,7 +51,7 @@ object Yandex extends Controller {
           Ok(wrap(toJson[GetBannersStatResponse](api.getBannersStat(s)))) as JSON
         } getOrElse BadRequest
       }
-      
+
       case "CreateNewReport" => { //++     BannerPhrasePerformance
         fromJson[NewReportInfo](param) map { s =>
           Ok(wrap(JsNumber(api.createNewReport(s)))) as JSON

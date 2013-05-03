@@ -109,6 +109,9 @@ class SquerylDao extends dao.Dao {
 
   def clearDB: Boolean = {
     import scala.util.control.Exception._
+
+    val numOfPh = 20 //number of phrases for 1 campaign, 1 banner, 1 region
+
     inTransaction {
       try {
         allCatch opt AppSchema.drop
@@ -139,7 +142,7 @@ class SquerylDao extends dao.Dao {
             r <- regions
           ) yield {
             //Phrases
-            val phrases = (1 to 200) map (i => Phrase("Phrase_" + i.toString + "_c" + c.id.toString + "_b" + b.id.toString).put) toList
+            val phrases = (1 to numOfPh) map (i => Phrase("Phrase_" + i.toString + "_c" + c.id.toString + "_b" + b.id.toString).put) toList
 
             phrases.zipWithIndex map {
               case (ph, i) =>

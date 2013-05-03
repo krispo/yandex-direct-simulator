@@ -18,6 +18,12 @@ case class API(
 
   /**------------ methods --------------**/
 
+  /* GetClientInfo */
+  def getClientInfo: List[ClientInfo] = {
+    val ci = ClientInfo(Login = login, Role = "Client")
+    List(ci)
+  }
+
   //retrieve from DB
   def getCampaignsList: List[ShortCampaignInfo] = {
 
@@ -93,7 +99,7 @@ case class API(
           Stat = bsiL)
       } get
 
-      //Create new detailed XML report
+  //Create new detailed XML report
   def createNewReport(par: NewReportInfo): Long = {
 
     val content = par.toXML //save to DB the NewReportInfo      
@@ -104,7 +110,7 @@ case class API(
     } getOrElse 0
   }
 
-      //Get Url for XML report
+  //Get Url for XML report
   def getReportList: List[ReportInfo] = {
     val conf = play.api.Play.current.configuration
 

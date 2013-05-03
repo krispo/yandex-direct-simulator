@@ -35,7 +35,10 @@ object Convert {
 
     "Performance" -> "models.Performance",
 
-    "GetBannersStatResponse" -> "models.GetBannersStatResponse")
+    "GetBannersStatResponse" -> "models.GetBannersStatResponse",
+
+    "ClientInfo" -> "models.ClientInfo",
+    "List[ClientInfo]" -> "scala.collection.immutable.List[models.ClientInfo]")
 
   def fromJson[T](data: JsValue)(implicit mf: Manifest[T]): Option[T] = {
     import Reads._
@@ -87,6 +90,11 @@ object Convert {
 
         case "GetBannersStatResponse" => //BannerPhrases Performance during the day (alternative to XMLreport)
           Json.toJson[GetBannersStatResponse](data.asInstanceOf[GetBannersStatResponse])
+          
+          case "ClientInfo" =>
+          Json.toJson[ClientInfo](data.asInstanceOf[ClientInfo])
+        case "List[ClientInfo]" =>
+          Json.toJson[List[ClientInfo]](data.asInstanceOf[List[ClientInfo]])
       }
     } getOrElse (JsNull)
   }
