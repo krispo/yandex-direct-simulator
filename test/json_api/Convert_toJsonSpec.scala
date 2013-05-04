@@ -92,6 +92,7 @@ class Convert_toJsonSpec extends Specification with AllExpectations {
     "take TRUE data" in {
       val bphi = BannerPhraseInfo(Phrase = "some_phrase")
       val data = BannerInfo(
+        CampaignID = 1,
         BannerID = 100,
         Text = "some",
         Geo = "12, 11",
@@ -114,6 +115,7 @@ class Convert_toJsonSpec extends Specification with AllExpectations {
     "take TRUE data" in {
       val bphi = BannerPhraseInfo(Phrase = "some_phrase")
       val bi = BannerInfo(
+        CampaignID = 1,
         BannerID = 100,
         Text = "some",
         Geo = "12, 11",

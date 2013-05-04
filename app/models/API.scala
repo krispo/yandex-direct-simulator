@@ -45,6 +45,7 @@ case class API(
       b <- c.banners
     } yield {
       BannerInfo(
+        CampaignID = c.id,
         BannerID = b.id,
         Text = b.text,
         Geo = "",
